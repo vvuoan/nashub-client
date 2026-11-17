@@ -402,7 +402,133 @@ function normalizeSearchPage(raw: unknown): MediaSearchPage {
   return {
     ...(page as unknown as MediaSearchPage),
     items,
+    // 插件 /search 只回 `total`（等于本次返回条数），没有 `count`。
     count: asNumber(page.count ?? page.total, items.length),
+  };
+}
+
+/** 媒体库：插件用 `kind`，UI 用 `collectionType`；`count` 插件不给，按条目数兜底。 */
+function normalizeLibrary(raw: unknown): LibrarySummary {
+  const item = asRecord(raw);
+  return {
+    ...(item as unknown as LibrarySummary),
+    id: asString(item.id ?? item.libraryId ?? item.library_id),
+    name: asString(item.name),
+    collectionType: asString(item.collectionType ?? item.kind),
+  };
+}
+
+/** 媒体库列表：插件回 `{ items: [...] }`，UI 期望 `{ libraries: [...], count }`。 */
+function normalizeLibraryPage(raw: unknown): LibraryListResponse {
+  const page = asRecord(raw);
+  const source = Array.isArray(page.items)
+    ? page.items
+    : Array.isArray(page.libraries)
+      ? page.libraries
+      : [];
+  const libraries = source.map(normalizeLibrary);
+  return {
+    ...(page as unknown as LibraryListResponse),
+    libraries,
+    count: asNumber(page.count ?? page.total, libraries.length),
+  };
+}
+
+/**
+ * EPG 归一化后最多向 UI 输出多少条「接下来」节目。
+ * 插件 /epg 一次最多回 500 条，全量交给课表会拖慢渲染；课表窗口只有 3 小时，5 条足够铺满。
+ */
+const EPG_UPCOMING_LIMIT = 5;
+
+/** 解析 ISO 时间（插件用 `...Z`），失败返回 null，由调用方整条丢弃。 */
+function parseTime(value: unknown): number | null {
+  const text = asString(value);
+  if (!text) return null;
+  const ms = Date.parse(text);
+  return Number.isFinite(ms) ? ms : null;
+}
+
+/** 单个节目：插件用 `start_at`/`stop_at`，UI 用 `startAt`/`stopAt`。时间不可解析时返回 null。 */
+function normalizeProgramme(raw: unknown): LiveProgramme | null {
+  const item = asRecord(raw);
+  const startAt = asString(item.startAt ?? item.start_at);
+  const stopAt = asString(item.stopAt ?? item.stop_at);
+  if (parseTime(startAt) === null || parseTime(stopAt) === null) return null;
+  return {
+    ...(item as unknown as LiveProgramme),
+    title: asString(item.title),
+    description:
+      item.description === null || item.description === undefined
+        ? null
+        : asString(item.description),
+    startAt,
+    stopAt,
+  };
+}
+
+function byStartAt(a: LiveProgramme, b: LiveProgramme): number {
+  return Date.parse(a.startAt) - Date.parse(b.startAt);
+}
+
+/**
+ * 节目单：插件回 `{ channelId, items: [{ start_at, stop_at, ... }] }`，
+ * UI 期望 `{ channelId, matched, current, upcoming, count, fetchedAt }`。
+ * `current`/`upcoming` 由客户端按当前时刻切分，避免 UI 各页面重复算。
+ * 若后端将来直接按客户端形状返回（已有 `current`/`upcoming` 字段），采信服务端结果、不再本地推导。
+ */
+function normalizeEpg(raw: unknown, fallbackChannelId: string): LiveEpgResponse {
+  const page = asRecord(raw);
+  // `items` 是插件形状字段，归一化后由 current/upcoming 表达；这里剔除，
+  // 不让最多 500 条原文跟着响应对象一路传给 UI（其它未知字段仍原样保留）。
+  const { items: _omittedItems, ...rest } = page;
+  const items = Array.isArray(page.items) ? page.items : null;
+  const clientShaped = "current" in page || "upcoming" in page;
+  const now = Date.now();
+
+  let current: LiveProgramme | null = null;
+  let upcoming: LiveProgramme[] = [];
+  let matched: boolean;
+
+  if (clientShaped) {
+    current = normalizeProgramme(page.current);
+    const given = Array.isArray(page.upcoming) ? page.upcoming : [];
+    upcoming = given
+      .map(normalizeProgramme)
+      .filter((item): item is LiveProgramme => item !== null)
+      .sort(byStartAt)
+      .slice(0, EPG_UPCOMING_LIMIT);
+    matched =
+      typeof page.matched === "boolean" ? page.matched : current !== null || upcoming.length > 0;
+  } else {
+    const programmes: LiveProgramme[] = [];
+    for (const entry of items ?? []) {
+      const programme = normalizeProgramme(entry);
+      // 时间解析失败的条目整条跳过，不让它污染 current/upcoming。
+      if (programme) programmes.push(programme);
+    }
+    const futures: LiveProgramme[] = [];
+    for (const programme of programmes) {
+      const start = Date.parse(programme.startAt);
+      const stop = Date.parse(programme.stopAt);
+      if (start > now) futures.push(programme);
+      // 正在播：start <= now < stop；已播完的部分直接丢弃。
+      else if (current === null && now < stop) current = programme;
+    }
+    upcoming = futures.sort(byStartAt).slice(0, EPG_UPCOMING_LIMIT);
+    matched = (items?.length ?? 0) > 0;
+  }
+
+  return {
+    ...(rest as unknown as LiveEpgResponse),
+    channelId: asString(page.channelId) || fallbackChannelId,
+    matched,
+    current,
+    upcoming,
+    count: asNumber(
+      page.count,
+      items ? items.length : upcoming.length + (current === null ? 0 : 1),
+    ),
+    fetchedAt: asString(page.fetchedAt) || new Date(now).toISOString(),
   };
 }
 
@@ -420,7 +546,7 @@ export const api = {
   mpSearch: (q: string, page = 1) =>
     request<unknown>(`/v1/mp/search?q=${encodeURIComponent(q)}&page=${page}`),
   mpSubscriptions: () => request<unknown>("/v1/mp/subscriptions"),
-  libraries: () => request<LibraryListResponse>("/v1/library/libraries"),
+  libraries: () => request<unknown>("/v1/library/libraries").then(normalizeLibraryPage),
   libraryItems: (
     libraryId: string,
     options: { limit?: number; startIndex?: number; type?: "Movie" | "Series" | "Episode" } = {},
@@ -443,8 +569,11 @@ export const api = {
   search: (q: string, limit = 20, type?: "movie" | "series" | "anime") => {
     const query = new URLSearchParams();
     query.set("q", q);
-    query.set("limit", String(Math.max(1, Math.min(50, limit))));
-    if (type) query.set("type", type);
+    // 插件 /search 只认 q 与 pageSize（catalog/plugin.py:174）；发 limit 会被 FastAPI 静默忽略，
+    // 表现为「要 20 条给 50 条」，所以在这里翻译成 pageSize。
+    query.set("pageSize", String(Math.max(1, Math.min(50, limit))));
+    // 插件暂不支持按类型过滤，等契约补 `type` 后再转发；入参保留以免破坏调用方。
+    void type;
     return request<unknown>(`/v1/search?${query.toString()}`).then(normalizeSearchPage);
   },
   liveGroups: () => request<LiveGroupsResponse>("/v1/live/groups"),
@@ -462,9 +591,11 @@ export const api = {
     );
   },
   liveEpg: (channelId: string, limit = 5) =>
-    request<LiveEpgResponse>(
+    // 插件 /epg 不认 limit（固定回最多 500 条），保留该参数只为将来后端支持时透传；
+    // current/upcoming 的切分与截断在 normalizeEpg 里做。
+    request<unknown>(
       `/v1/live/${encodeURIComponent(channelId)}/epg?limit=${Math.max(1, Math.min(50, limit))}`,
-    ),
+    ).then((raw) => normalizeEpg(raw, channelId)),
   liveStream: (channelId: string, index = 0) =>
     request<LiveStreamInfo>(
       `/v1/live/${encodeURIComponent(channelId)}/stream?index=${Math.max(0, index)}`,

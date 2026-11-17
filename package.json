@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "gen:types": "openapi-typescript docs/api/runtime-openapi.json -o src/data/openapi.d.ts",
     "preview": "vite preview",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
@@ -22,6 +23,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "openapi-typescript": "^7.13.0",
     "typescript": "~5.9.0",
     "vite": "^7.0.0"
   }

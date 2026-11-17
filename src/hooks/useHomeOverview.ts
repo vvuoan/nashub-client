@@ -1,24 +1,9 @@
-import { useEffect, useState } from "react";
-import { api, type HomeOverview } from "../data/api";
+import type { HomeOverview } from "../data/api";
 
-/** 天气 / 农历来自后端；失败就不显示，不用占位假数据。 */
+/**
+ * 天气 / 农历在 runtime-openapi.json 里没有对应接口（旧 home/overview 端点已下线）。
+ * 页面本来就把这两个字段当可选：返回 null 即不展示，不伪造数据，也不发无效请求。
+ */
 export function useHomeOverview(): HomeOverview | null {
-  const [overview, setOverview] = useState<HomeOverview | null>(null);
-
-  useEffect(() => {
-    let alive = true;
-    api
-      .homeOverview()
-      .then((data) => {
-        if (alive) setOverview(data);
-      })
-      .catch(() => {
-        if (alive) setOverview(null);
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  return overview;
+  return null;
 }

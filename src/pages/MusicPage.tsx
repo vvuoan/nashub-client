@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../components/base/Button";
 import { FocusScope } from "../components/base/FocusScope";
-import { api } from "../data/api";
-import { describe } from "../data/home";
 
 type MusicState = "loading" | "ready" | "unconfigured" | "unreachable" | "error" | "timeout";
 
@@ -50,7 +48,8 @@ const PLACEHOLDER_SRC = `<!doctype html>
 export function MusicPage({ preview, onBack }: MusicPageProps) {
   const [state, setState] = useState<MusicState>(preview ? (preview === "empty" ? "unconfigured" : "ready") : "loading");
   const [message, setMessage] = useState<string | null>(null);
-  const [baseUrl, setBaseUrl] = useState<string | null>(null);
+  // 新后端没有音乐服务状态接口，baseUrl 不再由探针填充。
+  const baseUrl: string | null = null;
   const [reloadKey, setReloadKey] = useState(0);
   const [frameLoaded, setFrameLoaded] = useState(false);
   const frameRef = useRef<HTMLIFrameElement>(null);
@@ -63,31 +62,9 @@ export function MusicPage({ preview, onBack }: MusicPageProps) {
       setFrameLoaded(false);
       return;
     }
-    let alive = true;
-    setState("loading");
-    setMessage(null);
-    void api
-      .musicStatus()
-      .then((status) => {
-        if (!alive) return;
-        if (status.configured && status.baseUrl) {
-          setBaseUrl(status.baseUrl);
-          setState("ready");
-          setFrameLoaded(false);
-        } else {
-          setState("unconfigured");
-          setMessage(status.message || null);
-        }
-      })
-      .catch((error) => {
-        if (!alive) return;
-        const next = describe(error);
-        setState(next.state === "unreachable" ? "unreachable" : "error");
-        setMessage(next.message);
-      });
-    return () => {
-      alive = false;
-    };
+    // 新后端契约没有音乐服务状态接口；保留页面与空态，按"未配置"降级，不伪造探测请求。
+    setState("unconfigured");
+    setMessage("当前后端未提供音乐服务状态接口");
   }, [preview, reloadKey]);
 
   useEffect(() => {
@@ -164,7 +141,7 @@ export function MusicPage({ preview, onBack }: MusicPageProps) {
           {state === "loading" && (
             <div className="music-empty">
               <h2>正在检测音乐服务</h2>
-              <p>请求 /v1/music/status · 最多等待 10 秒</p>
+              <p>等待音乐服务状态；当前后端契约未提供该接口</p>
             </div>
           )}
 

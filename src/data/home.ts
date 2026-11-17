@@ -19,6 +19,9 @@ function pctOf(percent: number | null, positionTicks: number, durationSec: numbe
 
 export function describe(error: unknown): Pick<HomeSnapshot, "state" | "message"> {
   if (error instanceof ApiError) {
+    if (error.code === "network" || error.code === "timeout") {
+      return { state: "unreachable", message: error.code };
+    }
     if (error.status === 401 || error.status === 403) {
       return { state: "unauthorized", message: `${error.status} ${error.code}` };
     }

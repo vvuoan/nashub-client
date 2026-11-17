@@ -27,7 +27,7 @@ export interface CatalogSearch {
   retry: () => void;
 }
 
-/** 统一检索：空查询不发请求；防抖后取 /v1/search。 */
+/** 统一检索：空查询不发请求；防抖后取新栈 GET /v1/catalog/search。 */
 export function useCatalogSearch(): CatalogSearch {
   const [query, setQuery] = useState("");
   const [state, setState] = useState<ConnState>("empty");

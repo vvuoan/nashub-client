@@ -72,14 +72,14 @@ ok / empty / error ──重试──▶ loading
 
 | 组件 | 端点 | 状态推导 |
 |---|---|---|
-| 推荐墙 | `GET /v1/recommend` | `rows.length === 0` → empty；单行 `row.items.length === 0` → 该行 empty；`partial === true` → 行尾「部分数据」 |
-| 分类页 | `GET /v1/library/{kind}` | `items.length === 0` → empty |
-| 收藏 | `GET /v1/favorites` | 分组后各组为空 → 各组 empty，全空 → 整页 empty |
+| 推荐墙 | `GET /v1/catalog/overview` + `GET /v1/catalog/items`（旧按 source 推荐接口已删除） | `rows.length === 0` → empty；单行 `row.items.length === 0` → 该行 empty；`hasMore === false` → 行尾到底 |
+| 分类页 | `GET /v1/catalog/items`（旧按库分页接口已删除） | `items.length === 0` → empty |
+| 收藏 | `GET /v1/collections/favorites` | 分组后各组为空 → 各组 empty，全空 → 整页 empty |
 | 直播频道 | `GET /v1/live/channels?group=` | `items.length === 0` → empty（该分组）；分组无 count → 页签 disabled |
-| 节目单 | `GET /v1/live/{id}/epg?limit=` | `current === null && upcoming.length === 0` → 该行 empty；`matched === false` → empty（无匹配源） |
-| 订阅 | `GET /v1/subscriptions` | `items.length === 0` → empty |
-| 下载任务 | `GET /v1/downloads` | 单任务 `status: queued\|running\|done\|error` → 行 loading/ok/error；`items.length === 0` → empty；卡片计数恒为 `total` |
-| 播放进度 | `GET /v1/progress/{id}` | 404 → empty（未看）；5xx → error |
+| 节目单 | `GET /v1/live/epg?channelId=`（旧按 id 路径接口已删除） | `current === null && upcoming.length === 0` → 该行 empty；`matched === false` → empty（无匹配源） |
+| 订阅 | `GET /v1/subscription/subscriptions`（旧平铺订阅接口已删除） | `items.length === 0` → empty |
+| 下载任务 | `GET /v1/downloader/tasks`（旧平铺下载接口已删除） | 单任务 `status: queued\|running\|done\|error` → 行 loading/ok/error；`items.length === 0` → empty；卡片计数恒为 `total` |
+| 播放进度 | `GET /v1/playback/progress/{item_id}` | 404 → empty（未看）；5xx → error |
 | 健康检查 | `GET /v1/health` | 2xx → ok；其余 → error |
 
 **错误码映射**

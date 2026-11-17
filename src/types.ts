@@ -8,7 +8,7 @@ export interface NavTile {
   tone: string;
 }
 
-/** 「继续观看」条目：全部字段来自后端 /v1/progress/recent。 */
+/** 「继续观看」条目：由 GET /v1/playback/progress 与目录项合并而来。 */
 export interface ContinueItem {
   id: string;
   title: string;
@@ -68,7 +68,7 @@ export interface MediaRowData {
   items: MediaCardData[];
 }
 
-/** 分类标签：key 对应 /v1/recommend 的 source。 */
+/** 分类标签：新栈无推荐来源列表，当前恒为空，UI 自动隐藏。 */
 export interface TagFilter {
   key: string;
   label: string;
@@ -81,6 +81,6 @@ export interface LibrarySnapshot {
   /** 影视首屏主视觉；其它页为 null */
   hero: MediaCardData | null;
   rows: MediaRowData[];
-  /** 分类标签，真实标签来自 /v1/recommend/sources */
+  /** 分类标签；新后端不提供来源列表，当前恒为空数组 */
   tags: TagFilter[];
 }

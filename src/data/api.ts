@@ -414,7 +414,8 @@ function normalizeLibrary(raw: unknown): LibrarySummary {
     ...(item as unknown as LibrarySummary),
     id: asString(item.id ?? item.libraryId ?? item.library_id),
     name: asString(item.name),
-    collectionType: asString(item.collectionType ?? item.kind),
+    // 用 `||` 而不是 `??`：插件给空串时同样回落到 kind。
+    collectionType: asString(item.collectionType) || asString(item.kind),
   };
 }
 
@@ -435,8 +436,10 @@ function normalizeLibraryPage(raw: unknown): LibraryListResponse {
 }
 
 /**
- * EPG 归一化后最多向 UI 输出多少条「接下来」节目。
- * 插件 /epg 一次最多回 500 条，全量交给课表会拖慢渲染；课表窗口只有 3 小时，5 条足够铺满。
+ * `upcoming` 的保底条数：调用方不指定（或要得比这更少）时向 UI 输出 5 条。
+ * 插件 /epg 一次最多回 500 条，全量交给课表会拖慢渲染；但上层确有要更多的场景
+ * （`useLivePage.ts` 的 `GUIDE_EPG_LIMIT = 20`，约覆盖 6–10 小时），所以这里只是下限，
+ * 不是硬上限：调用方要 20 就给 20，遇到 15/20 分钟短节目时课表右端才不至于留白。
  */
 const EPG_UPCOMING_LIMIT = 5;
 
@@ -474,15 +477,26 @@ function byStartAt(a: LiveProgramme, b: LiveProgramme): number {
  * 节目单：插件回 `{ channelId, items: [{ start_at, stop_at, ... }] }`，
  * UI 期望 `{ channelId, matched, current, upcoming, count, fetchedAt }`。
  * `current`/`upcoming` 由客户端按当前时刻切分，避免 UI 各页面重复算。
- * 若后端将来直接按客户端形状返回（已有 `current`/`upcoming` 字段），采信服务端结果、不再本地推导。
+ * 若后端将来直接按客户端形状返回（`upcoming` 是数组且带 `matched`），采信服务端结果、不再本地推导。
+ *
+ * `limit` 是调用方想要的 `upcoming` 条数（默认 {@link EPG_UPCOMING_LIMIT}，只作下限不下压）。
  */
-function normalizeEpg(raw: unknown, fallbackChannelId: string): LiveEpgResponse {
+function normalizeEpg(
+  raw: unknown,
+  fallbackChannelId: string,
+  limit: number = EPG_UPCOMING_LIMIT,
+): LiveEpgResponse {
   const page = asRecord(raw);
   // `items` 是插件形状字段，归一化后由 current/upcoming 表达；这里剔除，
   // 不让最多 500 条原文跟着响应对象一路传给 UI（其它未知字段仍原样保留）。
   const { items: _omittedItems, ...rest } = page;
   const items = Array.isArray(page.items) ? page.items : null;
-  const clientShaped = "current" in page || "upcoming" in page;
+  // 只有「upcoming 是数组 + 带 matched」才算后端已按新形状返回。只凭 current 键存在会误判：
+  // `{ channelId, current: null, items: [...] }` 会被当成新形状，导致 items 里的数据被静默丢弃。
+  const clientShaped = Array.isArray(page.upcoming) && "matched" in page;
+  const upcomingLimit = Number.isFinite(limit)
+    ? Math.max(EPG_UPCOMING_LIMIT, Math.floor(limit))
+    : EPG_UPCOMING_LIMIT;
   const now = Date.now();
 
   let current: LiveProgramme | null = null;
@@ -496,7 +510,7 @@ function normalizeEpg(raw: unknown, fallbackChannelId: string): LiveEpgResponse 
       .map(normalizeProgramme)
       .filter((item): item is LiveProgramme => item !== null)
       .sort(byStartAt)
-      .slice(0, EPG_UPCOMING_LIMIT);
+      .slice(0, upcomingLimit);
     matched =
       typeof page.matched === "boolean" ? page.matched : current !== null || upcoming.length > 0;
   } else {
@@ -514,7 +528,7 @@ function normalizeEpg(raw: unknown, fallbackChannelId: string): LiveEpgResponse 
       // 正在播：start <= now < stop；已播完的部分直接丢弃。
       else if (current === null && now < stop) current = programme;
     }
-    upcoming = futures.sort(byStartAt).slice(0, EPG_UPCOMING_LIMIT);
+    upcoming = futures.sort(byStartAt).slice(0, upcomingLimit);
     matched = (items?.length ?? 0) > 0;
   }
 
@@ -524,8 +538,9 @@ function normalizeEpg(raw: unknown, fallbackChannelId: string): LiveEpgResponse 
     matched,
     current,
     upcoming,
+    // `??` 先吃掉 null：`count: null` 不能送进 Number()（会变 0），要按缺失处理。
     count: asNumber(
-      page.count,
+      page.count ?? page.total,
       items ? items.length : upcoming.length + (current === null ? 0 : 1),
     ),
     fetchedAt: asString(page.fetchedAt) || new Date(now).toISOString(),
@@ -590,12 +605,14 @@ export const api = {
       normalizeLiveChannelPage,
     );
   },
-  liveEpg: (channelId: string, limit = 5) =>
-    // 插件 /epg 不认 limit（固定回最多 500 条），保留该参数只为将来后端支持时透传；
-    // current/upcoming 的切分与截断在 normalizeEpg 里做。
-    request<unknown>(
-      `/v1/live/${encodeURIComponent(channelId)}/epg?limit=${Math.max(1, Math.min(50, limit))}`,
-    ).then((raw) => normalizeEpg(raw, channelId)),
+  liveEpg: (channelId: string, limit = 5) => {
+    // 插件 /epg 不认 limit（固定回最多 500 条），URL 上的 limit 只为将来后端支持时透传；
+    // current/upcoming 的切分与截断在 normalizeEpg 里做，条数跟着调用方要的走（下限 5）。
+    const wanted = Math.max(1, Math.min(50, limit));
+    return request<unknown>(
+      `/v1/live/${encodeURIComponent(channelId)}/epg?limit=${wanted}`,
+    ).then((raw) => normalizeEpg(raw, channelId, wanted));
+  },
   liveStream: (channelId: string, index = 0) =>
     request<LiveStreamInfo>(
       `/v1/live/${encodeURIComponent(channelId)}/stream?index=${Math.max(0, index)}`,

@@ -1,21 +1,5 @@
-/* Font tokens. Components must reference these variables, never hard-code families. */
-:root {
-  --font-ui:
-    "Nastv SF Pro Text", "Nastv SF Pro Display", "SF Pro Text", Inter,
-    "Nastv PingFang SC", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
-  --font-display:
-    "Nastv SF Pro Display", "Nastv SF Pro Text", "SF Pro Display", Inter,
-    "Nastv PingFang SC", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
-  --font-compact:
-    "Nastv SF Compact Text", "SF Compact Text", "SF Text", "Nastv SF Pro Text", Inter,
-    "Nastv PingFang SC", "PingFang SC", "Noto Sans SC", sans-serif;
-  --font-mono:
-    "Nastv SF Mono", "SF Mono", ui-monospace, "Cascadia Mono", Consolas,
-    "Nastv PingFang SC", "PingFang SC", monospace;
-  --font-editorial:
-    "Nastv New York Large", "New York Large", "New York",
-    "Nastv SF Pro Display", "Nastv PingFang SC", "PingFang SC", serif;
-}
+/* 字体栈见 styles/fonts.css（--font-ui / --font-display / --font-compact / --font-mono / --font-editorial）。
+ * 本文件只放交互与版面 token。 */
 
 /*
  * 交互 / 版面 token（与 docs/design/13-ui-interaction-visual-spec.md 对应）

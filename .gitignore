@@ -3,10 +3,14 @@ node_modules/
 dist/
 dist-ssr/
 .vite/
+*.tsbuildinfo
 
 # Rust / Tauri
 src-tauri/target/
 src-tauri/gen/schemas/
+src-tauri/lib/*.dll
+src-tauri/lib/*.so
+src-tauri/lib/*.dylib
 *.exe
 *.msi
 *.dmg
@@ -32,3 +36,5 @@ Thumbs.db
 src/fonts/**/*.woff2
 src/fonts/**/*.ttf
 src/fonts/**/*.otf
+# 本地字体声明：只提交 .example，实际文件按需自建
+src/styles/fonts.local.css

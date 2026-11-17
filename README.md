@@ -16,23 +16,52 @@ NAS 媒体中心的 10-foot 大屏客户端：Tauri 2 + React 19 + Vite + TypeSc
 ## 目录结构
 
 ```
-src/
-├── App.tsx / main.tsx     应用入口与路由外壳
-├── pages/                 页面：首页、媒体库、详情、播放器、直播、音乐、搜索、设置等
-├── components/            复用组件（海报卡、货架、状态面板、连接提示等）
-├── player/                播放器封装
-├── focus/                 焦点管理（方向键导航、焦点环、回退栈）
-├── hooks/                 数据与交互 hooks
-├── data/                  后端 API 客户端与演示数据适配（不含真实媒体库数据）
-├── styles/                全局样式、token、字体声明、页面样式
-├── lib/                   工具函数
-├── ui/                    基础 UI 原子
-├── fonts/                 字体放置目录（二进制不入库，见下）
-└── types.ts               领域类型
-
-src-tauri/                 Rust 侧：窗口、命令、能力声明、打包配置与图标
-docs/design/               UI 设计规范、交互规范与审计记录
+nashub-client/
+├─ src/                        前端源码
+│  ├─ App.tsx / main.tsx       应用入口、路由与全局样式引入
+│  ├─ pages/                   页面级组件（首页、媒体库、详情、播放器、直播、音乐、设置等）
+│  ├─ components/              跨页面复用组件
+│  │  ├─ base/                 基础控件（按钮、焦点、弹层、骨架、进度等）
+│  │  └─ media/                媒体类组件（海报卡、货架、节目单、播放控制等）
+│  ├─ player/                  播放器后端封装（MPV IPC / 宿主）
+│  ├─ focus/                   空间焦点与方向键导航
+│  ├─ hooks/                   数据与交互 hooks
+│  ├─ data/                    API 客户端、首页聚合、导航配置
+│  ├─ styles/                  token、字体回退栈、页面与首页样式
+│  ├─ lib/                     图标与缩放工具
+│  ├─ ui/                      跨页共享的 UI 状态定义
+│  ├─ fonts/                   字体放置目录（二进制不入库，见该目录 README）
+│  └─ types.ts                 领域类型
+├─ src-tauri/                  Rust 侧
+│  ├─ src/                     入口、窗口与播放器实现
+│  ├─ capabilities/            权限清单（Tauri 2 capability）
+│  ├─ icons/                   各平台应用图标（仓库内，不排除）
+│  ├─ Cargo.toml / Cargo.lock  Rust 依赖
+│  ├─ tauri.conf.json          窗口、打包与安全配置
+│  └─ build.rs                 构建脚本
+├─ docs/
+│  ├─ README.md                文档索引
+│  └─ design/                  UI / 交互 / 字体规范与审计记录
+├─ index.html                   Vite 入口 HTML
+├─ package.json                依赖与脚本
+├─ tsconfig.json               TypeScript 配置
+├─ vite.config.ts              Vite 配置（端口、构建输出）
+├─ .gitattributes              行尾与二进制处理
+└─ .gitignore                  排除依赖、产物、字体与本地配置
 ```
+
+### 新增内容该放哪
+
+| 要做的事 | 放哪 | 注意 |
+|---|---|---|
+| 新增一个页面 | `src/pages/<Name>Page.tsx` | 在 `src/App.tsx` 注册路由；页面内只用 `--font-*` 变量 |
+| 新增跨页面组件 | `src/components/` | 基础控件放 `base/`，媒体相关放 `media/` |
+| 新增数据请求 | `src/hooks/use<Thing>.ts` + `src/data/api.ts` | 不留 mock 数据；后端不可达时显示真实失败态 |
+| 改设计 token | `src/styles/tokens.css` + `docs/design/09-tokens` | 字号/颜色/间距必须落到 token |
+| 改字体栈 | `src/styles/fonts.css` | 不要写 `url()`；本地字形放 `fonts.local.css`（不入库） |
+| 改播放器 | `src/player/` + `src-tauri/src/player.rs` | 前端与 Rust 命令需同时改 |
+| 加 Tauri 权限 | `src-tauri/capabilities/default.json` | 最小权限，新增能力要写清用途 |
+| 加设计规范 | `docs/design/` | 编号沿用现有序列，更新 `docs/design/README.md` 索引 |
 
 ## 本地启动
 
@@ -59,9 +88,10 @@ npm run tauri:build
 设计稿使用 SF Pro / SF Compact / SF Mono / New York / PingFang SC 等苹果专有字体，
 受 Apple 授权限制，**字体二进制不随仓库分发**：
 
-- `src/styles/fonts.css` 保留全部 `@font-face` 声明与 `unicode-range`
-- 字体文件需自行放入 `src/fonts/<family>/`，具体文件名与路径见 [src/fonts/README.md](src/fonts/README.md)
-- 缺字体不会构建失败，`font-display: swap` 与 `--font-*` 回退栈保证可用
+- `src/styles/fonts.css` 只保留 `--font-*` 回退栈，不含任何 `url()`
+- `src/styles/fonts.local.css.example` 保存 19 条 `@font-face` 模板；复制为
+  `fonts.local.css`（已 gitignore）并自备 woff2 后，`main.tsx` 会自动打包
+- 没有字体文件时构建照常通过，字形回退到系统字体；文件清单见 [src/fonts/README.md](src/fonts/README.md)
 
 ## 设计规范文档
 

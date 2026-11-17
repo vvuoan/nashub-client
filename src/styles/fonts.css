@@ -1,0 +1,173 @@
+/* Bundled font faces. Generated from src/fonts/*.woff2. */
+/* Latin uses SF Pro / New York; CJK uses PingFang SC via unicode-range. */
+
+@font-face {
+  font-family: "Nastv SF Pro Display";
+  src: url("../fonts/sf-pro-display/SF-Pro-Display-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Pro Display";
+  src: url("../fonts/sf-pro-display/SF-Pro-Display-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Pro Display";
+  src: url("../fonts/sf-pro-display/SF-Pro-Display-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Pro Display";
+  src: url("../fonts/sf-pro-display/SF-Pro-Display-Semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Pro Display";
+  src: url("../fonts/sf-pro-display/SF-Pro-Display-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Pro Text";
+  src: url("../fonts/sf-pro-text/SF-Pro-Text-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Pro Text";
+  src: url("../fonts/sf-pro-text/SF-Pro-Text-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Pro Text";
+  src: url("../fonts/sf-pro-text/SF-Pro-Text-Semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Pro Text";
+  src: url("../fonts/sf-pro-text/SF-Pro-Text-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Compact Text";
+  src: url("../fonts/sf-compact-text/SF-Compact-Text-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Compact Text";
+  src: url("../fonts/sf-compact-text/SF-Compact-Text-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Mono";
+  src: url("../fonts/sf-mono/SF-Mono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv SF Mono";
+  src: url("../fonts/sf-mono/SF-Mono-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv New York Large";
+  src: url("../fonts/new-york-large/NewYorkLarge-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv New York Large";
+  src: url("../fonts/new-york-large/NewYorkLarge-Semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-024F, U+1E00-1EFF, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2200-22FF, U+25A0-25FF, U+2600-26FF;
+}
+
+@font-face {
+  font-family: "Nastv PingFang SC";
+  src: url("../fonts/pingfang-sc/PingFangSC-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+2000-206F, U+2E80-2EFF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
+}
+
+@font-face {
+  font-family: "Nastv PingFang SC";
+  src: url("../fonts/pingfang-sc/PingFangSC-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+2000-206F, U+2E80-2EFF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
+}
+
+@font-face {
+  font-family: "Nastv PingFang SC";
+  src: url("../fonts/pingfang-sc/PingFangSC-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+2000-206F, U+2E80-2EFF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
+}
+
+@font-face {
+  font-family: "Nastv PingFang SC";
+  src: url("../fonts/pingfang-sc/PingFangSC-Semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+2000-206F, U+2E80-2EFF, U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
+}

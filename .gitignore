@@ -1,0 +1,34 @@
+# 依赖与构建产物
+node_modules/
+dist/
+dist-ssr/
+.vite/
+
+# Rust / Tauri
+src-tauri/target/
+src-tauri/gen/schemas/
+*.exe
+*.msi
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+# 本地环境
+.env
+.env.*
+!.env.example
+*.local
+
+# 编辑器与系统
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# 字体：苹果专有字体不得入库（见 src/fonts/README.md）
+src/fonts/**/*.woff2
+src/fonts/**/*.ttf
+src/fonts/**/*.otf

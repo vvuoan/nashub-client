@@ -1,0 +1,801 @@
+{
+  "$schema": "https://design-tokens.org/schema/2024.10",
+  "$meta": {
+    "name": "Generic 10-foot UI Tokens",
+    "version": "1.0.0",
+    "spec": "docs/design/09-ui-spec-generic.md",
+    "description": "与具体项目无关的电视端（10-foot UI）默认值模板。所有尺寸为 1080p 设计像素，落地时乘以 scale。",
+    "basisCanvas": { "width": 1920, "height": 1080 },
+    "unit": "dp@1080p",
+    "usage": "生成 CSS 变量时：--value: calc(token * var(--s))；字号与圆角必须取整，发丝线用 max(1px, 1px * s)。",
+    "tagLegend": {
+      "spec": "平台规范原则（Apple tvOS HIG / Android TV & Google TV）",
+      "convention": "行业通行做法",
+      "derived": "由观看距离/视角/像素密度推导",
+      "measured": "可由对比度或几何公式直接验证"
+    }
+  },
+
+  "base": {
+    "canvas": { "width": 1920, "height": 1080, "aspectRatio": "16:9" },
+    "designPx": 1,
+    "viewingDistance": { "minM": 2.5, "defaultM": 3.0, "maxM": 4.0, "tag": "convention" },
+    "input": { "primary": "dpad+ok+back", "focusModel": "single", "pointer": false, "touch": false },
+    "scale": {
+      "formula": "s = min(W / 1920, H / 1080)",
+      "alternateFormula": "s = W / 1920 (仅严格 16:9 且无需安全区补偿时)",
+      "min": 0.5,
+      "max": 4.0,
+      "presets": [
+        { "viewport": "1280x720", "s": 0.667 },
+        { "viewport": "1920x1080", "s": 1.0 },
+        { "viewport": "2560x1440", "s": 1.333 },
+        { "viewport": "3840x2160", "s": 2.0 },
+        { "viewport": "7680x4320", "s": 4.0 }
+      ],
+      "tag": "derived"
+    },
+    "rounding": {
+      "positionStep": 0.5,
+      "fontSize": "integer",
+      "radius": "integer, min 4",
+      "spacing": "snap to spacing.scale",
+      "hairline": "max(1px, 1px * s)",
+      "note": "禁止对字号做链式等比缩放；同一层级各自取整。"
+    }
+  },
+
+  "safeArea": {
+    "overscan": { "ratio": 0.05, "altRatio": 0.035, "px1080": { "horizontal": 96, "vertical": 54 }, "tag": "spec" },
+    "actionSafe": { "ratio": 0.93, "px1080": { "horizontal": 67, "vertical": 38 }, "tag": "convention" },
+    "titleSafe": { "ratio": 0.90, "px1080": { "horizontal": 96, "vertical": 54 }, "tag": "convention" },
+    "visualMargin": { "default": 80, "min": 48, "max": 160, "typicalMax": 120, "tag": "convention" },
+    "rules": [
+      "焦点环外缘必须落在 actionSafe 内",
+      "所有文字必须落在 titleSafe 内",
+      "一个产品只允许一套左右边距",
+      "背景/氛围层可铺满，但不承载信息"
+    ]
+  },
+
+  "grid": {
+    "formula": {
+      "contentWidth": "C = W0 - 2 * M",
+      "columnWidth": "cw = (C - (N - 1) * G) / N",
+      "gap": "G = (C - N * cw) / (N - 1)"
+    },
+    "columns": [
+      { "n": 4, "use": "大图推荐位、详情相关推荐、儿童模式", "avoid": "片库浏览", "tag": "convention" },
+      { "n": 5, "use": "首页货架、混合内容", "avoid": "超大库", "tag": "convention" },
+      { "n": 6, "use": "海报墙默认、影视库、收藏", "avoid": "小屏 <1280", "tag": "convention" },
+      { "n": 7, "use": "高密度库、搜索结果、管理视图", "avoid": "3m 客厅（字号过小）", "tag": "derived" },
+      { "n": 8, "use": "纯文本列表", "avoid": "任何需读文字的场景", "tag": "convention" }
+    ],
+    "default": { "n": 6, "gutter": 40, "marginX": 80, "marginY": 60 },
+    "presets": [
+      {
+        "name": "default",
+        "marginX": 80, "marginY": 60, "gutter": 40,
+        "contentWidth": 1760,
+        "columns": [
+          { "n": 4, "cw": 410, "h2x3": 615, "h16x9": 230.6, "h1x1": 410 },
+          { "n": 5, "cw": 320, "h2x3": 480, "h16x9": 180.0, "h1x1": 320 },
+          { "n": 6, "cw": 260, "h2x3": 390, "h16x9": 146.25, "h1x1": 260 },
+          { "n": 7, "cw": 217.1, "h2x3": 325.7, "h16x9": 122.1, "h1x1": 217.1 }
+        ]
+      },
+      {
+        "name": "compact",
+        "marginX": 64, "marginY": 48, "gutter": 24,
+        "contentWidth": 1792,
+        "columns": [
+          { "n": 5, "cw": 339.2, "h2x3": 508.8, "h16x9": 190.8 },
+          { "n": 6, "cw": 278.7, "h2x3": 418.0, "h16x9": 156.8 },
+          { "n": 7, "cw": 235.4, "h2x3": 353.1, "h16x9": 132.4 }
+        ]
+      },
+      {
+        "name": "cinematic",
+        "marginX": 120, "marginY": 64, "gutter": 48,
+        "contentWidth": 1680,
+        "columns": [
+          { "n": 4, "cw": 384, "h2x3": 576, "h16x9": 216 },
+          { "n": 5, "cw": 297.6, "h2x3": 446.4, "h16x9": 167.4 },
+          { "n": 6, "cw": 240, "h2x3": 360, "h16x9": 135 }
+        ]
+      }
+    ],
+    "roundingStrategy": [
+      "G 取整，允许 cw 带 0.5，布局用 flex/grid 自动分配",
+      "或 cw 取整，把余数平均分摊到左右边距（M 增大 2–4）",
+      "禁止只让最后一列变宽"
+    ]
+  },
+
+  "cards": {
+    "ratios": {
+      "poster": { "ratio": "2:3", "widthFactor": 1.0, "heightFactor": 1.5, "use": "影视条目、收藏、搜索结果", "tag": "convention" },
+      "landscape": { "ratio": "16:9", "widthFactor": 1.0, "heightFactor": 0.5625, "use": "继续观看、剧集、直播、推荐位", "tag": "convention" },
+      "square": { "ratio": "1:1", "widthFactor": 1.0, "heightFactor": 1.0, "use": "人物、音乐、播客、频道", "tag": "convention" },
+      "banner5x4": { "ratio": "5.4:1", "widthFactor": 1.0, "heightFactor": 0.185185, "use": "运营位、活动、单条强推荐", "minWidth": 648, "minHeight": 120, "spanOnly": true, "tag": "convention" },
+      "hero2x1": { "ratio": "2:1", "widthFactor": 1.0, "heightFactor": 0.5, "use": "详情页头图、影院 hero", "minWidth": 800, "tag": "convention" }
+    },
+    "widthScale": [
+      { "w": 180, "posterH": 270, "landscapeH": 101.25, "squareH": 180 },
+      { "w": 200, "posterH": 300, "landscapeH": 112.5, "squareH": 200 },
+      { "w": 220, "posterH": 330, "landscapeH": 123.75, "squareH": 220 },
+      { "w": 240, "posterH": 360, "landscapeH": 135, "squareH": 240 },
+      { "w": 260, "posterH": 390, "landscapeH": 146.25, "squareH": 260 },
+      { "w": 280, "posterH": 420, "landscapeH": 157.5, "squareH": 280 },
+      { "w": 300, "posterH": 450, "landscapeH": 168.75, "squareH": 300 },
+      { "w": 320, "posterH": 480, "landscapeH": 180, "squareH": 320 },
+      { "w": 360, "posterH": 540, "landscapeH": 202.5, "squareH": 360 },
+      { "w": 410, "posterH": 615, "landscapeH": 230.625, "squareH": 410 }
+    ],
+    "radius": {
+      "formula": "r = clamp(6, 0.055 * w, 28)",
+      "formulaLarge": "r = clamp(12, 0.08 * w, 36)",
+      "min": 6, "max": 28, "maxLarge": 36,
+      "table": [
+        { "w": 200, "r": 11, "rLarge": 16 },
+        { "w": 260, "r": 14, "rLarge": 21 },
+        { "w": 320, "r": 18, "rLarge": 26 },
+        { "w": 410, "r": 23, "rLarge": 33 },
+        { "w": 640, "r": 28, "rLarge": 36 }
+      ],
+      "note": "圆角 > 8% 卡宽显药丸化；< 4% 在 3m 外不可见",
+      "banner": {
+        "formula": "r = clamp(8, 0.10 * h, 36)",
+        "basis": "宽幅元素按短边感知曲率；用 0.055w 会被 28 截断，通栏观感接近直角",
+        "table": [
+          { "h": 120, "r": 12, "w": 648 },
+          { "h": 151, "r": 15, "w": 816 },
+          { "h": 159, "r": 16, "w": 860 },
+          { "h": 215, "r": 22, "w": 1160 },
+          { "h": 280, "r": 28, "w": 1512 },
+          { "h": 326, "r": 33, "w": 1760 }
+        ],
+        "min": 8,
+        "max": 36,
+        "mixedRowNote": "半幅横幅与 2:3 卡同排时取两者较小值 +0~2"
+      },
+      "tag": "convention"
+    },
+    "textBlock": {
+      "heightRatio": { "poster": [0.22, 0.32], "landscape": [0.28, 0.36] },
+      "padding": { "x": [12, 16], "y": [8, 12] },
+      "titleLines": 1,
+      "metaOpacity": [0.6, 0.75],
+      "progressBar": { "height": [3, 4], "offsetBottom": [8, 12], "radius": 2 },
+      "scrim": "linear-gradient(0deg, rgba(0,0,0,.92) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,0) 100%)"
+    },
+    "banner": {
+      "ratio": "5.4:1",
+      "heightFormula": "h = w / 5.4",
+      "spanFormula": "span(k) = k * cw + (k - 1) * G",
+      "rule": "不得按单列取宽；单列高度 36.8-79.6，全部低于 minHeight",
+      "minHeight": {
+        "titleOnly": 120,
+        "titlePlusMeta": 150,
+        "titleSubCta": 180,
+        "fullHero": 280,
+        "hardFloor": 120,
+        "fallback": [
+          "h < 120：改 16:9（h = 0.5625w）",
+          "需要两行文字 + 按钮但宽度只有 860：改 2:1（860x430）",
+          "高度被压缩但宽度 >= 900：文字移出横幅，放到卡下文字区"
+        ]
+      },
+      "usage": {
+        "fullBleed": { "formula": "C = W0 - 2M", "values": [1760, 1792, 1680], "when": "页面第一区块、独立运营页、专题头图" },
+        "halfAligned": { "formula": "span(k)", "values": [860, 884, 816], "when": "与同排卡片共享列宽（推荐）" },
+        "halfSplit": { "formula": "(C - G) / 2", "values": [860, 884, 816], "when": "横幅独占一行、旁边是文字或按钮组" }
+      },
+      "spanTables": [
+        {
+          "preset": "default", "marginX": 80, "gutter": 40, "contentWidth": 1760,
+          "rows": [
+            { "n": 4, "spans": [{ "k": 1, "w": 410, "h": 75.9, "ok": false }, { "k": 2, "w": 860, "h": 159.3, "ok": true }, { "k": 3, "w": 1310, "h": 242.6, "ok": true }, { "k": 4, "w": 1760, "h": 325.9, "ok": true, "full": true }] },
+            { "n": 6, "spans": [{ "k": 1, "w": 260, "h": 48.1, "ok": false }, { "k": 2, "w": 560, "h": 103.7, "ok": false }, { "k": 3, "w": 860, "h": 159.3, "ok": true }, { "k": 4, "w": 1160, "h": 214.8, "ok": true }, { "k": 6, "w": 1760, "h": 325.9, "ok": true, "full": true }] },
+            { "n": 7, "spans": [{ "k": 1, "w": 217.1, "h": 40.2, "ok": false }, { "k": 2, "w": 474.3, "h": 87.8, "ok": false }, { "k": 3, "w": 731.4, "h": 135.5, "ok": true }, { "k": 4, "w": 988.6, "h": 183.1, "ok": true }, { "k": 7, "w": 1760, "h": 325.9, "ok": true, "full": true }] }
+          ]
+        },
+        {
+          "preset": "compact", "marginX": 64, "gutter": 24, "contentWidth": 1792,
+          "rows": [
+            { "n": 4, "spans": [{ "k": 1, "w": 430, "h": 79.6, "ok": false }, { "k": 2, "w": 884, "h": 163.7, "ok": true }, { "k": 3, "w": 1338, "h": 247.8, "ok": true }, { "k": 4, "w": 1792, "h": 331.9, "ok": true, "full": true }] },
+            { "n": 6, "spans": [{ "k": 1, "w": 278.7, "h": 51.6, "ok": false }, { "k": 2, "w": 581.3, "h": 107.6, "ok": false }, { "k": 3, "w": 884, "h": 163.7, "ok": true }, { "k": 4, "w": 1186.7, "h": 219.8, "ok": true }, { "k": 6, "w": 1792, "h": 331.9, "ok": true, "full": true }] },
+            { "n": 7, "spans": [{ "k": 1, "w": 235.4, "h": 43.6, "ok": false }, { "k": 2, "w": 494.9, "h": 91.6, "ok": false }, { "k": 3, "w": 754.3, "h": 139.7, "ok": true }, { "k": 4, "w": 1013.7, "h": 187.7, "ok": true }, { "k": 7, "w": 1792, "h": 331.9, "ok": true, "full": true }] }
+          ]
+        },
+        {
+          "preset": "cinematic", "marginX": 120, "gutter": 48, "contentWidth": 1680,
+          "rows": [
+            { "n": 4, "spans": [{ "k": 1, "w": 384, "h": 71.1, "ok": false }, { "k": 2, "w": 816, "h": 151.1, "ok": true }, { "k": 3, "w": 1248, "h": 231.1, "ok": true }, { "k": 4, "w": 1680, "h": 311.1, "ok": true, "full": true }] },
+            { "n": 6, "spans": [{ "k": 1, "w": 240, "h": 44.4, "ok": false }, { "k": 2, "w": 528, "h": 97.8, "ok": false }, { "k": 3, "w": 816, "h": 151.1, "ok": true }, { "k": 4, "w": 1104, "h": 204.4, "ok": true }, { "k": 6, "w": 1680, "h": 311.1, "ok": true, "full": true }] },
+            { "n": 7, "spans": [{ "k": 1, "w": 198.9, "h": 36.8, "ok": false }, { "k": 2, "w": 445.7, "h": 82.5, "ok": false }, { "k": 3, "w": 692.6, "h": 128.3, "ok": true }, { "k": 4, "w": 939.4, "h": 174.0, "ok": true }, { "k": 7, "w": 1680, "h": 311.1, "ok": true, "full": true }] }
+          ]
+        }
+      ],
+      "overlaySafe": {
+        "paddingX": "clamp(32, 0.05 * w, 80)",
+        "paddingY": "clamp(16, 0.12 * h, 48)",
+        "textBlockMaxWidth": 0.55,
+        "textBlockMaxWidthFullBleed": 0.5,
+        "ctaOffsetLeft": { "min": 48, "fullBleed": 64 },
+        "ctaOffsetBottom": 24,
+        "ctaSize": { "height": [56, 64], "radius": [8, 12] },
+        "reservedRight": 96,
+        "scrimHorizontal": "rgba(0,0,0,0) 0% -> rgba(0,0,0,0.55) 55% -> rgba(0,0,0,0.85) 100%",
+        "scrimVertical": "rgba(0,0,0,0) 0% -> rgba(0,0,0,0.45) 45% -> rgba(0,0,0,0.80) 100%",
+        "textContrast": 7.0,
+        "minGapToRadius": 16
+      },
+      "cropIntoBanner": {
+        "formula": "keepRatio = (1 / 5.4) / (h_src / w_src)",
+        "safeMaxCrop": 0.60,
+        "conditionalMaxCrop": 0.65,
+        "sources": [
+          { "ratio": "2.76:1", "crop": 0.49, "keep": 0.51, "verdict": "cover" },
+          { "ratio": "2.39:1", "crop": 0.56, "keep": 0.44, "verdict": "cover" },
+          { "ratio": "21:9", "crop": 0.57, "keep": 0.43, "verdict": "cover" },
+          { "ratio": "2:1", "crop": 0.63, "keep": 0.37, "verdict": "subject-centering-required" },
+          { "ratio": "16:9", "crop": 0.67, "keep": 0.33, "verdict": "reject" }
+        ],
+        "rules": [
+          "裁剪 > 65% 不做",
+          "16:9 源默认不进 5.4:1：改用专用横幅图，或 contain + 两侧模糊填充",
+          "源图窄于 5.4:1（4:3 / 1:1 / 竖图）禁止用于横幅"
+        ]
+      },
+      "focus": {
+        "fullBleed": "border 3-4px + fillLift 0.08（+ 左侧 6-8px 强调条）；禁止 scale",
+        "half": "scale 1.03（<= 1.04），上下预留 8-12；或改内部图片 scale 1.02-1.04",
+        "note": "transform 不参与布局，不会挤开上下内容，只会覆盖；通栏 1.06 会超出内容区（1760 -> 1866）"
+      }
+    },
+    "hero2x1": {
+      "ratio": "2:1",
+      "heightFormula": "h = 0.5 * w",
+      "minWidth": 800,
+      "widthScale": [
+        { "w": 800, "h": 400 },
+        { "w": 860, "h": 430 },
+        { "w": 1024, "h": 512 },
+        { "w": 1280, "h": 640 },
+        { "w": 1440, "h": 720 },
+        { "w": 1680, "h": 840 },
+        { "w": 1760, "h": 880 }
+      ],
+      "note": "通栏 840-880 占内容区 87-92%，只用于独立 hero 页，不放进普通滚动页",
+      "use": "详情页头图、影院模式；可容纳片名 + 2-3 行简介 + 按钮组",
+      "focus": "border 优先；独立 hero 页可 scale 1.02-1.03"
+    },
+    "ratioDecision": [
+      { "order": 1, "condition": "w < 648", "choose": "16:9" },
+      { "order": 2, "condition": ">= 2 行文字 + 按钮，高度可到 300", "choose": "2:1" },
+      { "order": 3, "condition": "单条 + 独占一行 + w >= 900 + h <= 332", "choose": "5.4:1" },
+      { "order": 4, "condition": "多条内容 / 网格 / 货架", "choose": "16:9" },
+      { "order": 5, "condition": "其余", "choose": "16:9" }
+    ],
+    "unlistedRatios": [
+      { "ratio": "1:1.5", "status": "included-as-2:3", "reason": "宽:高 1:1.5 即 2:3 海报" },
+      { "ratio": "3:2", "status": "not-listed", "reason": "与 2:3 互为横竖；16:9 容器 cover 即可" },
+      { "ratio": "3:4", "status": "not-listed", "reason": "用 1:1 或 2:3 cover 裁切，不再增加尺寸档" },
+      { "ratio": "4:3", "status": "not-listed", "reason": "仅老片；16:9 容器 + contain + 模糊底" },
+      { "ratio": "2.39:1 / 21:9", "status": "source-only", "reason": "影片原生画幅，属源图比例，不作为容器" },
+      { "ratio": "1.85:1", "status": "not-listed", "reason": "与 16:9 差异 < 4%，不值得新增" },
+      { "ratio": "9:16", "status": "forbidden", "reason": "竖向内容不适配 10-foot 横屏" }
+    ]
+  },
+
+  "images": {
+    "formula": "imgWidth >= cw * s * DPR * 1.15",
+    "safetyFactor": 1.15,
+    "steps": [240, 320, 480, 640, 800, 960, 1280, 1600, 1920, 2560, 3840, 4096],
+    "posterTable": [
+      { "cardW": 160, "at1080p1x": 240, "at1080p2x": 480, "at4k1x": 480, "at4k2x": 800 },
+      { "cardW": 200, "at1080p1x": 240, "at1080p2x": 480, "at4k1x": 480, "at4k2x": 960 },
+      { "cardW": 260, "at1080p1x": 320, "at1080p2x": 640, "at4k1x": 640, "at4k2x": 1280 },
+      { "cardW": 320, "at1080p1x": 480, "at1080p2x": 800, "at4k1x": 800, "at4k2x": 1600 },
+      { "cardW": 410, "at1080p1x": 480, "at1080p2x": 960, "at4k1x": 960, "at4k2x": 1920 }
+    ],
+    "bannerTable": [
+      { "bannerW": 640, "at1080p1x": 800, "at1080p2x": 1600, "at4k1x": 1600, "at4k2x": 3840 },
+      { "bannerW": 816, "at1080p1x": 960, "at1080p2x": 1920, "at4k1x": 1920, "at4k2x": 3840 },
+      { "bannerW": 860, "at1080p1x": 1280, "at1080p2x": 2560, "at4k1x": 2560, "at4k2x": 4096 },
+      { "bannerW": 1160, "at1080p1x": 1600, "at1080p2x": 3840, "at4k1x": 3840, "at4k2x": null },
+      { "bannerW": 1680, "at1080p1x": 2560, "at1080p2x": 4096, "at4k1x": 4096, "at4k2x": null },
+      { "bannerW": 1760, "at1080p1x": 2560, "at1080p2x": 4096, "at4k1x": 4096, "at4k2x": null }
+    ],
+    "bannerRules": [
+      "高度 = 宽度 / 5.4，可多留 5-10% 供裁切",
+      "w >= 1160 时不要求 4K@2x（所需超过 4096）；4K 按 4096 交付，允许 <= 1.3 倍上采样",
+      "最小 1280x238（半幅）/ 1920x356（通栏）",
+      "推荐 1920x356（半幅）/ 2560x474（通栏）；4K 通栏 4096x759",
+      "禁止用 16:9 图 + contain 充数"
+    ],
+    "minimums": {
+      "poster": { "minW": 240, "recommended": [480, 640] },
+      "landscape": { "minW": 480, "recommended": [640, 960] },
+      "avatar": { "minW": 160, "recommended": [240, 320] },
+      "banner5x4": { "minW": 1280, "recommended": [1920, 2560], "minHeight": 238 },
+      "hero2x1": { "minW": 1280, "recommended": [1920, 2560] },
+      "hero": { "minW": 1920, "recommended": [2560, 3840] },
+      "icon": { "format": "svg", "raster": false }
+    },
+    "formats": ["avif", "webp"],
+    "rules": [
+      "禁止放大 1080p 图到 4K",
+      "同一卡片不同 DPR 只换 srcset，不改布局",
+      "比例不匹配用 object-fit: cover + 焦点裁切，禁止拉伸"
+    ]
+  },
+
+  "spacing": {
+    "base": 4,
+    "scale": [4, 8, 12, 16, 24, 32, 48, 64, 96],
+    "exceptions": { "hairline": 1, "progressBar": 2 },
+    "levels": {
+      "l1_intra": { "range": [4, 8], "use": "图标-文字、标签-数值、进度条-底边", "tag": "convention" },
+      "l2_inter": { "range": [8, 16], "use": "按钮组、列表项内部、卡内文字行", "tag": "derived" },
+      "l3_blockInner": { "range": [16, 24], "use": "卡片 padding、面板内边距", "tag": "convention" },
+      "l4_blockGap": { "range": [32, 64], "use": "货架之间、区块标题到内容", "tag": "convention" },
+      "l5_page": { "range": [48, 96], "use": "四边页面边距", "tag": "convention" }
+    },
+    "rowGap": { "posterWall": [32, 48], "shelf": [48, 64], "default": 40 },
+    "rules": [
+      "同一页面最多 6 个不同间距值",
+      "G（列间距）与 R（行间距）分开定义",
+      "标题到内容距离 >= 16 且 <= 卡间距"
+    ]
+  },
+
+  "typography": {
+    "fontFamily": {
+      "cjk": "Noto Sans SC",
+      "latin": "Inter",
+      "fallback": "system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif",
+      "numeric": "tabular-nums"
+    },
+    "minimum": {
+      "bodyPxAt1080p": 24,
+      "absoluteFloorPx": 20,
+      "distanceFormula": "minPx ~= 0.09 * distanceCm",
+      "derivation": "1deg ~= 52.4mm @3m; 55-inch 16:9 -> 0.634mm/px; target x-height 10 arcmin -> ~27.4px; 65-inch -> ~23.2px",
+      "tag": "derived"
+    },
+    "scale": [
+      { "token": "displayXl", "size": [96, 128], "weight": [200, 300], "lineHeight": [1.0, 1.1], "letterSpacing": "-0.02em", "use": "首页时钟、超大标题", "minSizeForWeight": 48 },
+      { "token": "display", "size": [64, 80], "weight": 300, "lineHeight": [1.05, 1.15], "letterSpacing": "-0.01em", "use": "主视觉片名" },
+      { "token": "title1", "size": [48, 56], "weight": [500, 600], "lineHeight": [1.1, 1.2], "letterSpacing": "0", "use": "页面标题、详情片名" },
+      { "token": "title2", "size": [36, 44], "weight": 600, "lineHeight": [1.15, 1.25], "letterSpacing": "0", "use": "分区标题、弹窗标题" },
+      { "token": "title3", "size": [28, 32], "weight": 600, "lineHeight": [1.2, 1.3], "letterSpacing": "0", "use": "货架标题" },
+      { "token": "bodyL", "size": [26, 28], "weight": 400, "lineHeight": [1.35, 1.45], "letterSpacing": "0", "use": "简介、说明" },
+      { "token": "body", "size": 24, "weight": 400, "lineHeight": 1.4, "letterSpacing": "0", "use": "正文基准" },
+      { "token": "label", "size": [20, 22], "weight": [500, 600], "lineHeight": 1.3, "letterSpacing": "0", "use": "卡名、按钮、导航" },
+      { "token": "caption", "size": [18, 20], "weight": [400, 500], "lineHeight": 1.3, "letterSpacing": "0", "use": "元信息、时长" },
+      { "token": "micro", "size": [14, 16], "weight": 400, "lineHeight": 1.25, "letterSpacing": "0.02em", "use": "角标（仅非关键信息）", "critical": false }
+    ],
+    "weightUsage": {
+      "200-300": "仅 Display / 时钟，且字号 >= 48",
+      "400": "正文、简介",
+      "500": "标签、导航、卡名（仅交互元素）",
+      "600": "标题、按钮（同屏 <= 2 处）",
+      "700+": "数字强调、角标（少见）"
+    },
+    "measure": { "maxCjkCharsPerLine": [28, 32], "pxEquivalent": [680, 760] }
+  },
+
+  "icons": {
+    "viewBoxes": [16, 20, 24, 32, 40, 48],
+    "default": { "viewBox": 24, "stroke": 2 },
+    "strokeFormula": "stroke = clamp(1.5, 0.0625 * viewBox + 0.5, 4)",
+    "strokeRatio": [0.07, 0.10],
+    "table": [
+      { "viewBox": 16, "stroke": 1.5, "ratio": 0.094, "use": "角标、内联" },
+      { "viewBox": 20, "stroke": 1.75, "ratio": 0.0875, "use": "列表内、次要按钮" },
+      { "viewBox": 24, "stroke": 2, "ratio": 0.083, "use": "导航、按钮、卡片（默认）" },
+      { "viewBox": 32, "stroke": 2.5, "ratio": 0.078, "use": "导航栏、播放控制" },
+      { "viewBox": 40, "stroke": 3, "ratio": 0.075, "use": "磁贴、大按钮" },
+      { "viewBox": 48, "stroke": 3.5, "ratio": 0.073, "use": "首页主入口" }
+    ],
+    "textPairing": {
+      "gap": "0.35-0.5 * iconSize",
+      "align": "visual center -> x-height center",
+      "baselineOffset": "(fontSize - iconSize) / 2 + 1",
+      "sameColor": true
+    },
+    "rules": [
+      "统一 SVG，圆头圆角，不在不同尺寸重画",
+      "同一层级只允许描边型或填充型之一",
+      "状态图标必须配文字，不能只靠颜色",
+      "纯图标按钮目标 >= 48x48 @1080p"
+    ]
+  },
+
+  "focus": {
+    "required": true,
+    "schemes": {
+      "border": {
+        "strokeWidth": { "min": 2, "max": 4, "default": 3 },
+        "color": "rgba(255,255,255,0.92)",
+        "colorRange": [0.85, 1.0],
+        "outerGap": { "min": 0, "max": 8, "default": 0 },
+        "fillLift": [0.05, 0.10],
+        "geometryChange": false,
+        "use": "密集网格、列表行、设置项、不可改尺寸的布局",
+        "pros": "不引起重排",
+        "cons": "远处不够醒目",
+        "tag": "convention"
+      },
+      "ring": {
+        "ringWidth": { "min": 3, "max": 6, "default": 4 },
+        "gap": { "min": 8, "max": 12, "default": 10 },
+        "color": "rgba(255,255,255,1)",
+        "outerShadow": "rgba(0,0,0,0.30)",
+        "geometryChange": false,
+        "use": "浅色/复杂背景、需强提示的主入口",
+        "pros": "醒目",
+        "cons": "占空间，卡间距 < 24 时环会互碰",
+        "tag": "convention"
+      },
+      "scale": {
+        "factor": { "min": 1.04, "max": 1.12, "default": 1.06, "recommended": [1.06, 1.08], "hardMax": 1.15 },
+        "shadow": { "y": [12, 32], "blur": [32, 64], "spread": [-2, -8], "default": "0 18 40 -4", "opacity": [0.35, 0.50] },
+        "durationMs": { "min": 120, "max": 200, "default": 160 },
+        "easing": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "use": "首页主入口、货架卡片、主视觉",
+        "pros": "强提示、有纵深感",
+        "cons": ">1.12 会遮挡相邻卡与文字",
+        "tag": "convention"
+      }
+    },
+    "combinations": {
+      "heroGrid": "scale(1.06) + border(3)",
+      "posterWall": "border 或 scale(1.04-1.06)，不用环",
+      "shelf": "scale(1.06) + 轻微提亮",
+      "listRow": "整行提亮 + 左侧 4px 竖条",
+      "button": "border + fillLift",
+      "bannerFullBleed": "border 3-4px + fillLift 0.08（可加左侧 6-8px 强调条）；禁止 scale",
+      "bannerHalf": "scale 1.03（<= 1.04）+ 轻阴影；预留 8-12 间隙，或改内部图片 scale 1.02-1.04",
+      "hero2x1": "border 优先；独立 hero 页可 scale 1.02-1.03",
+      "disabled": "无焦点环，白度 0.30-0.40，可聚焦但不触发"
+    },
+    "rules": [
+      "同一页面只允许一种焦点语言",
+      "焦点环外缘必须落在 actionSafe 内",
+      "父容器不得 overflow: hidden 裁掉环"
+    ]
+  },
+
+  "color": {
+    "elevation": {
+      "base": { "l": [0.03, 0.08], "example": "#05080A" },
+      "panel": { "l": [0.08, 0.14], "example": "#14181C" },
+      "overlay": { "l": [0.14, 0.22], "example": "#1A1C21" },
+      "control": { "l": [0.18, 0.26], "example": "#22282E" },
+      "divider": "rgba(255,255,255,0.12)",
+      "minDeltaL": 0.06,
+      "tag": "measured"
+    },
+    "text": {
+      "primary": 1.0,
+      "body": 0.92,
+      "secondary": 0.75,
+      "tertiary": 0.60,
+      "disabled": 0.30,
+      "nonCritical": [0.45, 0.30],
+      "note": "大段正文避免纯白，用 0.92-0.96",
+      "contrast": {
+        "body": { "min": 4.5, "recommended": 7.0 },
+        "large": { "min": 3.0 },
+        "secondary": { "min": 3.0, "floor": 2.5 },
+        "tag": "spec"
+      }
+    },
+    "accent": {
+      "maxAreaRatio": 0.10,
+      "huesPerScreen": 1,
+      "allowedUses": ["focus", "progress", "selection", "primaryCTA"],
+      "forbiddenUses": ["大面积背景"],
+      "semantic": {
+        "success": { "saturation": [0.6, 0.8] },
+        "error": { "saturation": [0.6, 0.8] },
+        "warning": { "saturation": [0.6, 0.8] },
+        "rule": "必须配图标或文字"
+      }
+    },
+    "scrim": "rgba(0,0,0,0) 0% -> rgba(0,0,0,0.55) 55% -> rgba(0,0,0,0.92) 100%"
+  },
+
+  "motion": {
+    "easing": {
+      "standard": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+      "emphasized": "cubic-bezier(0.16, 0.84, 0.24, 1)",
+      "enter": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "exit": "ease-out"
+    },
+    "durations": {
+      "focusMove": { "min": 120, "max": 200, "default": 160, "property": "transform, opacity" },
+      "press": { "min": 80, "max": 120, "default": 100, "effect": "scale 0.97-0.99 或 亮度 -8%" },
+      "panelExpand": { "min": 200, "max": 320, "default": 240, "exit": [160, 220], "scrim": 200 },
+      "pageTransition": { "min": 240, "max": 400, "default": 300, "effect": "淡入 + 8-24px 位移" },
+      "skeleton": { "min": 900, "max": 1400, "loop": true },
+      "toast": { "enter": 160, "dwell": [2400, 3200], "exit": 200 }
+    },
+    "rules": [
+      "连续按键时焦点动画必须可被打断，不排队",
+      "禁止动画 width/height/top/left/filter",
+      "单帧预算 <= 16.6ms（60fps）",
+      "减少动态：去掉位移与缩放，只留 80ms 透明度"
+    ]
+  },
+
+  "layouts": {
+    "posterWall": {
+      "columnWidth": "grid.presets[*].columns[*].cw",
+      "columnGap": [24, 40],
+      "rowGap": [32, 48],
+      "rowPitch": "cardHeight + rowGap + textBlockHeight",
+      "rowsPerScreen": [2, 3],
+      "scroll": "整行滚动，焦点到边缘才滚，步长 = rowPitch",
+      "alignment": "所有行共享 M 与 cw，禁止末行居中"
+    },
+    "shelf": {
+      "cardWidth": "与网格 cw 相同",
+      "peek": [0.08, 0.12],
+      "gap": [16, 32],
+      "titleGap": [12, 16],
+      "shelfGap": [48, 64],
+      "focus": "scale，放大后不得遮标题或下一行"
+    },
+    "list": {
+      "rowHeight": { "single": [56, 64], "double": [72, 88], "triple": [96, 112] },
+      "thumb": { "single": [40, 48], "double": [64, 80] },
+      "paddingX": [16, 24],
+      "thumbTextGap": [12, 16],
+      "rowGap": [0, 8],
+      "focus": "整行提亮 + 左侧 4px 竖条",
+      "text": { "primary": [20, 22], "secondary": 18 }
+    },
+    "mixedRules": [
+      "共享左基线：三种布局使用同一个 M",
+      "共享列宽：货架卡宽 = 网格 cw",
+      "共享标题栅格：标题与卡片左缘对齐，不缩进",
+      "共享行节奏：区块间距统一 48-64",
+      "焦点不越界：放大卡不得进入相邻区块标题区",
+      "整页单一纵向滚动上下文，不嵌套"
+    ]
+  },
+
+  "components": {
+    "button": {
+      "height": { "default": 56, "range": [48, 64] },
+      "minWidth": { "primary": 120, "secondary": 96, "icon": 48 },
+      "paddingX": { "primary": [24, 32], "secondary": [20, 28] },
+      "radius": [8, 12],
+      "font": { "size": [20, 22], "weight": [500, 600] },
+      "iconSize": 24,
+      "iconGap": [8, 12],
+      "groupGap": [16, 24],
+      "focus": "border 3 + fillLift 0.08"
+    },
+    "table": {
+      "headerHeight": 56,
+      "rowHeight": { "default": 64, "range": [56, 72] },
+      "cellPaddingX": [16, 24],
+      "cellPaddingY": [8, 12],
+      "font": { "header": [20, 600], "body": [20, 22] },
+      "divider": "1px rgba(255,255,255,0.12)",
+      "focus": "row highlight + left 4px bar"
+    },
+    "dialog": {
+      "width": { "default": 800, "range": [640, 960], "maxRatio": 0.6 },
+      "maxHeight": 864,
+      "padding": [32, 40],
+      "radius": { "default": 20, "range": [16, 24] },
+      "title": "title2 36-44/600",
+      "body": "body 24/1.4, white 0.75-0.90",
+      "actionGap": 16,
+      "scrim": 0.65,
+      "initialFocus": "primaryButton",
+      "enter": 240,
+      "exit": 180
+    },
+    "toast": {
+      "maxWidth": 480,
+      "height": [56, 72],
+      "radius": [8, 12],
+      "fontSize": 20,
+      "offsetBottom": 64,
+      "enter": 160,
+      "exit": 200,
+      "dwell": [2400, 3200],
+      "focusable": false
+    },
+    "skeleton": {
+      "geometry": "same as target",
+      "baseLift": 0.02,
+      "highlightLift": 0.06,
+      "shimmer": [900, 1400]
+    },
+    "empty": {
+      "iconSize": [48, 96],
+      "iconDefault": 64,
+      "iconStroke": [2, 3],
+      "title": "title3 28-32",
+      "body": { "size": 24, "opacity": [0.6, 0.75] },
+      "verticalTopRatio": [0.12, 0.18],
+      "cta": "primary button, max 1"
+    },
+    "error": {
+      "layout": "same as empty",
+      "codeFont": [14, 16],
+      "codeOpacity": 0.45,
+      "retry": "required",
+      "colorOnly": false
+    },
+    "progress": {
+      "linear": { "height": { "default": 4, "range": [2, 6] }, "radius": 2, "trackOpacity": 0.12, "indeterminateWidth": 0.30, "cycle": 1200 },
+      "circular": { "diameter": [32, 48], "stroke": [3, 4] }
+    },
+    "badge": {
+      "height": [20, 28],
+      "radius": [4, 999],
+      "font": [14, 16],
+      "weight": 600,
+      "paddingX": [6, 8],
+      "offset": 8
+    },
+    "avatar": {
+      "sizes": [32, 40, 48, 64, 88],
+      "shape": "circle",
+      "border": "1px rgba(255,255,255,0.12)",
+      "initialFontRatio": 0.4
+    },
+    "chip": {
+      "height": [40, 48],
+      "paddingX": [16, 20],
+      "radius": [999, 12],
+      "fontSize": [18, 20],
+      "selectedFillOpacity": [0.20, 0.24]
+    },
+    "segmented": {
+      "height": [48, 56],
+      "minSegmentWidth": 96,
+      "indicator": [2, 3],
+      "radius": [8, 12],
+      "fontSize": [18, 20]
+    },
+    "switch": {
+      "track": [56, 32],
+      "knob": 24,
+      "radius": 999,
+      "offOpacity": 0.24,
+      "onColor": "accent",
+      "focusRing": 3
+    },
+    "input": {
+      "height": [56, 64],
+      "paddingX": [16, 20],
+      "fontSize": 24,
+      "radius": [8, 12],
+      "caretWidth": 2,
+      "focusBorder": 3,
+      "errorBorder": 2
+    },
+    "keyboard": {
+      "key": { "default": 64, "min": 48 },
+      "gap": 8,
+      "columns": 12,
+      "rows": 4,
+      "candidateBarHeight": 48,
+      "heightRatio": [0.40, 0.45]
+    },
+    "search": {
+      "height": [52, 60],
+      "iconSize": 24,
+      "clearButton": 40,
+      "resultRowHeight": 64
+    },
+    "pagination": {
+      "dotSize": [8, 10],
+      "activeDotSize": 12,
+      "gap": 8
+    },
+    "scrollbar": {
+      "width": { "default": 4, "range": [3, 6] },
+      "minLength": 32,
+      "hideDelay": 2000
+    },
+    "topNav": {
+      "height": [72, 96],
+      "itemHeight": [48, 56],
+      "itemPaddingX": [20, 24],
+      "indicator": [3, 4]
+    },
+    "drawer": {
+      "width": { "default": 720, "range": [480, 720], "ratio": 0.375 },
+      "rowHeight": [56, 72],
+      "padding": [24, 32],
+      "enter": 240,
+      "exit": 180,
+      "scrim": 0.5,
+      "initialFocus": "firstItem"
+    },
+    "episodeRow": {
+      "height": [72, 88],
+      "indexWidth": 48,
+      "thumb": { "landscape": [128, 72], "square": 64 },
+      "currentBarWidth": [3, 4]
+    },
+    "playerBar": {
+      "height": [96, 120],
+      "progressHeight": [4, 6],
+      "progressHitArea": 24,
+      "buttonSize": 48,
+      "iconSize": [28, 32],
+      "buttonGap": [8, 12],
+      "timeFont": 18,
+      "autoHide": 3000
+    },
+    "volumeOverlay": {
+      "width": [360, 480],
+      "height": [96, 160],
+      "barHeight": [4, 6],
+      "offsetBottom": [96, 120],
+      "subtitleRowHeight": 56
+    }
+  },
+
+  "boundary": {
+    "ultrawide21x9": { "viewport": [2560, 1080], "s": 1.0, "contentWidth": 1760, "sideMargin": 400, "rule": "不增加列数、不拉宽卡片；只有背景铺满" },
+    "screen4x3": { "viewport": [1024, 768], "s": 0.533, "drawSize": [1024, 576], "letterbox": 96, "rule": "UI 不进入黑边" },
+    "fractionalDpr": [
+      { "dpr": 1.25, "cardW": 260, "need": 374, "step": 480 },
+      { "dpr": 1.5, "cardW": 260, "need": 449, "step": 480 }
+    ],
+    "longCjkTitle": { "maxLines": 2, "maxCharsPerLine": [28, 32], "shrinkFont": false, "ellipsisOrder": ["subtitle", "titleLine2"] },
+    "i18n": { "lineHeight": "multiplier", "extraLineHeight": 0.10, "avoidFixedCharCount": true },
+    "rtl": { "logicalProperties": true, "mirror": ["nav", "progress"], "noMirror": ["media", "timeline", "numerals"] },
+    "shadowOnBlack": { "problem": "invisible", "fix": ["1px rgba(255,255,255,0.08-0.12) border", "panel L >= 0.06"] },
+    "lowBrightness": { "baseL": [0.0, 0.04], "maxWhite": 0.85, "minContrast": 4.5 },
+    "hdr": { "uiLayer": "SDR graphics layer ~100-203 nits", "bodyWhite": [0.90, 0.96], "avoid": ["large pure white", "saturated + high luminance"] }
+  },
+
+  "accessibility": {
+    "contrast": { "body": 4.5, "recommended": 7.0, "large": 3.0, "focusRing": 3.0 },
+    "minTarget": [48, 48],
+    "minFocusGap": 8,
+    "minFont": 20,
+    "nonCriticalMinFont": 14,
+    "keyPathDepth": 4,
+    "layerDepth": 3,
+    "backPriority": ["closeOverlay", "closeDrawer", "previousPage"],
+    "reduceMotion": { "duration": 80, "property": "opacity", "disable": ["transform", "scale"] },
+    "contrastBasis": "final composited background (image + scrim + translucent panel)"
+  },
+
+  "executionBoundaries": [
+    { "rule": "网格/卡片/圆角/间距/字号档", "executable": true, "note": "纯算术" },
+    { "rule": "位图档位", "executable": true, "note": "需用 物理分辨率/CSS 视口宽 反推有效 DPR" },
+    { "rule": "模糊半径 <= 96", "executable": false, "note": "需目标机型实测帧率" },
+    { "rule": "对比度", "executable": "partial", "note": "按最终合成背景验算" },
+    { "rule": "3m 外可见", "executable": false, "note": "推导/经验，需现场验证" },
+    { "rule": "焦点语言唯一", "executable": false, "note": "设计评审约束" },
+    { "rule": "HDR 表现", "executable": false, "note": "取决于平台图形层与显示器" }
+  ],
+
+  "cssVariableHints": {
+    "scale": "--s = min(100vw / 1920, 100vh / 1080)",
+    "spacing": "--space-4: calc(4 * var(--s) * 1px)",
+    "font": "--font-body: calc(24 * var(--s) * 1px)  // 需 JS 取整后写回",
+    "radius": "--radius-card: calc(14 * var(--s) * 1px)",
+    "focusScale": "transform: scale(1.06); transition: transform 160ms cubic-bezier(.2,.8,.2,1)",
+    "focusRing": "outline: calc(4 * var(--s) * 1px) solid rgba(255,255,255,1); outline-offset: calc(10 * var(--s) * 1px)",
+    "hairline": "border-width: max(1px, calc(1px * var(--s)))"
+  },
+
+  "unresolved": []
+}

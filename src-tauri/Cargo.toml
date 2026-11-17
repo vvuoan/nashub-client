@@ -1,0 +1,28 @@
+[package]
+name = "nastv"
+version = "0.1.0"
+description = "NasTv 10-foot UI shell"
+authors = ["NasTv"]
+edition = "2021"
+rust-version = "1.77"
+
+[lib]
+name = "nastv_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2.9", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# 非主线：libmpv 插件只在显式启用 feature 时编译。
+# 默认播放路径是外部 mpv 进程 + JSON IPC（src/player.rs）。
+tauri-plugin-libmpv = { version = "0.3.2", optional = true }
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+# 可选实验开关：`cargo run --features libmpv`
+libmpv = ["dep:tauri-plugin-libmpv"]

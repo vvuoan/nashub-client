@@ -1,0 +1,428 @@
+{
+  "$meta": {
+    "name": "NasTv UI tokens",
+    "source": "Ardot canvas file 747656034464944 / Page 1 (0:1)",
+    "extractedAt": "2026-11-16",
+    "method": "ardot batch_read：84 个顶层节点 + 12 个子树，共 599 个 TEXT 节点、7 个 COMPONENT_SET 变体；fetch_variables 返回空，fetch_styles 返回空，因此全部为字面量，无变量/共享样式。",
+    "units": "px（画布坐标，按 1920×1080 设计稿）",
+    "unresolved": [
+      "strokeWeight：仅对部分节点单独读取，未逐个取样；已确认 2:21=1.5、2:112=3、2:115=1、2:175=1.5，其余未取到",
+      "letterSpacing：599 个 TEXT 全部为 null",
+      "lineHeight：583/599 为 AUTO，仅 16 个有显式像素值",
+      "动效：画布无 duration/easing 字段，未记录",
+      "渐变角度：仅返回 gradientTransform 矩阵，无角度字段",
+      "constraints：仅取样 6 个节点（均为 MIN/MIN），未覆盖全部 84 个顶层节点"
+    ]
+  },
+
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "safeArea": { "left": 64, "right": 64, "top": 64, "bottom": 64 },
+    "home": { "left": 64, "right": 64, "top": 64, "bottom": 64 },
+    "contentPages": { "left": 188, "right": 188 },
+    "grid": {
+      "posterCard": { "width": 200, "height": 300, "gapX": 24, "gapY": 32, "columns": 7, "pitchX": 224, "pitchY": 432 },
+      "entryTile": { "count": 6, "width": 268, "height": 150, "gap": 24, "pitch": 292, "rowStartX": 88, "rowY": 829 },
+      "continueCard": { "width": 320, "height": 180, "gap": 32, "count": 5 },
+      "episodeCard": { "width": 292, "height": 232, "gap": 22, "columns": 5 },
+      "settingsRows": { "contentWidth": 1192, "rowHeight": 72, "rowHeightWide": 80 }
+    }
+  },
+
+  "color": {
+    "background": {
+      "page": "#05080A",
+      "pageAlt": "#0A0D10",
+      "pageDeep": "#0A0D0F",
+      "solidBlack": "#000000",
+      "panelSurface": "#14181C",
+      "panelBorder": "#23282E",
+      "divider": "#1D2126",
+      "track": "#262B31",
+      "segmentBg": "#1B2025",
+      "buttonBg": "#1E2429",
+      "buttonBorder": "#2A3037",
+      "stepperButton": "#22282E",
+      "inputBg": "#101418",
+      "switchOff": "#3A3F45",
+      "switchOffKnob": "#6E7276",
+      "knob": "#0A0D10"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "primary90": "rgba(255,255,255,0.90)",
+      "primary85": "rgba(255,255,255,0.85)",
+      "primary72": "rgba(255,255,255,0.72)",
+      "primary70": "rgba(255,255,255,0.70)",
+      "primary60": "rgba(255,255,255,0.60)",
+      "primary55": "rgba(255,255,255,0.55)",
+      "primary50": "rgba(255,255,255,0.50)",
+      "primary45": "rgba(255,255,255,0.45)",
+      "primary44": "rgba(255,255,255,0.44)",
+      "primary40": "rgba(255,255,255,0.40)",
+      "value": "#C8CACC",
+      "secondary": "#8B8F94",
+      "muted": "#7C8085",
+      "disabled": "#5F6368",
+      "disabledLabel": "#A9ABAE",
+      "onLight": "#0B0D11",
+      "buttonLabel": "#E8E9EA",
+      "danger": "#E8837A",
+      "accentNote": "#D9C27E",
+      "success": "#2FB86B"
+    },
+    "accent": {
+      "gold": "#B8A663",
+      "goldAlt": "#D8A657",
+      "goldStrokeAlt": "#D9A657",
+      "noteBg": "#221D14",
+      "updateBadgeBg": "#2A2418"
+    },
+    "status": {
+      "success": "#2FB86B",
+      "successFill20": "rgba(47,184,107,0.20)",
+      "successStroke75": "rgba(47,184,107,0.75)",
+      "dangerBg": "#241A18",
+      "dangerBorder": "#6E3A33",
+      "dangerText": "#E8837A",
+      "neutralDot": "#5F6368"
+    },
+    "alphaWhite": {
+      "w04": 0.04, "w05": 0.05, "w07": 0.07, "w08": 0.08, "w09": 0.09,
+      "w10": 0.10, "w12": 0.12, "w13": 0.13, "w14": 0.14, "w16": 0.16,
+      "w18": 0.18, "w20": 0.20, "w24": 0.24, "w28": 0.28, "w32": 0.32,
+      "w38": 0.38, "w45": 0.45, "w60": 0.60, "w80": 0.80, "w92": 0.92
+    },
+    "gradient": {
+      "wallDim": {
+        "angle": "180deg",
+        "stops": [
+          { "pos": 0, "color": "rgba(0,0,0,0.34)" },
+          { "pos": 0.30, "color": "rgba(0,0,0,0.10)" },
+          { "pos": 0.62, "color": "rgba(0,0,0,0.16)" },
+          { "pos": 1, "color": "rgba(0,0,0,0.72)" }
+        ]
+      },
+      "leftScrim": {
+        "angle": "90deg",
+        "size": "720x1080 @x=48",
+        "stops": [
+          { "pos": 0, "color": "rgba(0,0,0,0.92)" },
+          { "pos": 0.34, "color": "rgba(0,0,0,0.62)" },
+          { "pos": 0.68, "color": "rgba(0,0,0,0.12)" },
+          { "pos": 1, "color": "rgba(0,0,0,0.02)" }
+        ]
+      },
+      "bottomScrim": {
+        "angle": "180deg",
+        "size": "1920x520 @y=560",
+        "stops": [
+          { "pos": 0.42, "color": "rgba(0,0,0,0)" },
+          { "pos": 0.50, "color": "rgba(0,0,0,0)" },
+          { "pos": 0.78, "color": "rgba(0,0,0,0.55)" },
+          { "pos": 1, "color": "rgba(0,0,0,0.95)" }
+        ]
+      },
+      "posterInfo": {
+        "angle": "180deg",
+        "stops": [
+          { "pos": 0, "color": "rgba(0,0,0,0.10)" },
+          { "pos": 0.76, "color": "rgba(0,0,0,0.68)" },
+          { "pos": 1, "color": "rgba(0,0,0,0.94)" }
+        ]
+      },
+      "glassPlate": {
+        "note": "2:21 白色系渐变（不是深色玻璃），与现有 CSS 相反",
+        "stops": [
+          { "pos": 0, "color": "rgba(255,255,255,0.15)" },
+          { "pos": 1, "color": "rgba(255,255,255,0.05)" }
+        ]
+      },
+      "panelSurface": {
+        "stops": [
+          { "pos": 0, "color": "#1A1C21" },
+          { "pos": 1, "color": "#0D0F12" }
+        ]
+      },
+      "wallpaperPanel": {
+        "stops": [
+          { "pos": 0, "color": "#171C21" },
+          { "pos": 1, "color": "#070A0D" }
+        ]
+      }
+    }
+  },
+
+  "typography": {
+    "family": { "cjk": "Noto Sans SC", "latinNumeric": "Inter" },
+    "letterSpacing": 0,
+    "lineHeight": "AUTO（583/599）；显式值仅：20/22/26/28/30/32/34/36",
+    "scale": [
+      { "token": "clock", "size": 128, "weight": "Light", "family": "Inter", "usage": "首页时钟 23:24" },
+      { "token": "heroTitle", "size": 76, "weight": "Light", "usage": "影视/详情页大标题" },
+      { "token": "heroTitleCompact", "size": 62, "weight": "Light", "usage": "详情页紧凑标题" },
+      { "token": "detailTitle", "size": 56, "weight": "Light", "usage": "订阅详情片名" },
+      { "token": "detailTitleAlt", "size": 52, "weight": "Light", "usage": "详情页片名" },
+      { "token": "pageTitle", "size": 44, "weight": "SemiBold", "usage": "设置页标题" },
+      { "token": "heroTitleSmall", "size": 40, "weight": "Light", "usage": "详情页小标题" },
+      { "token": "panelTitle", "size": 38, "weight": "Bold", "usage": "壁纸面板标题" },
+      { "token": "heroTitleTiny", "size": 34, "weight": "SemiBold", "usage": "说明区标题" },
+      { "token": "sectionTitle", "size": 32, "weight": "SemiBold", "usage": "页面分区标题（影视 · 三屏）" },
+      { "token": "rowTitle", "size": 30, "weight": "SemiBold", "usage": "内容行标题（猜你喜欢）" },
+      { "token": "dialogTitle", "size": 26, "weight": "Light", "usage": "筛选面板标题" },
+      { "token": "dateLine", "size": 26, "weight": "Medium", "usage": "首页日期/农历" },
+      { "token": "groupTitle", "size": 26, "weight": "SemiBold", "usage": "搜索结果计数、规范标题" },
+      { "token": "panelTab", "size": 25, "weight": "SemiBold", "usage": "壁纸来源标签" },
+      { "token": "metaLarge", "size": 24, "weight": "Medium", "usage": "分类标签、筛选胶囊、元信息" },
+      { "token": "button", "size": 24, "weight": "SemiBold", "usage": "磁贴名、主按钮、卡片名" },
+      { "token": "body", "size": 23, "weight": "Regular", "usage": "长简介" },
+      { "token": "tileName", "size": 23, "weight": "SemiBold", "usage": "首页磁贴名" },
+      { "token": "chip", "size": 22, "weight": "Medium", "usage": "筛选胶囊文字" },
+      { "token": "desc", "size": 22, "weight": "Regular", "usage": "详情简介" },
+      { "token": "eyebrow", "size": 22, "weight": "SemiBold", "usage": "眉标/行标题" },
+      { "token": "meta", "size": 21, "weight": "Medium", "usage": "详情元信息" },
+      { "token": "cta", "size": 21, "weight": "SemiBold", "usage": "详情按钮" },
+      { "token": "metaSmall", "size": 20, "weight": "Medium", "usage": "继续观看按钮、导航文字" },
+      { "token": "cardTitle", "size": 20, "weight": "SemiBold", "usage": "继续观看卡名" },
+      { "token": "label", "size": 19, "weight": "Medium", "usage": "设置行标签、卡片元信息" },
+      { "token": "bodySmall", "size": 19, "weight": "Regular", "usage": "卡片简介" },
+      { "token": "nav", "size": 18, "weight": "Medium", "usage": "设置导航项" },
+      { "token": "metaTiny", "size": 18, "weight": "SemiBold", "usage": "片名小标、演职人员标题" },
+      { "token": "caption", "size": 18, "weight": "Regular", "usage": "继续观看进度、集信息" },
+      { "token": "rating", "size": 17, "weight": "SemiBold", "usage": "评分 8.9（Inter）" },
+      { "token": "captionSmall", "size": 17, "weight": "Regular", "usage": "订阅时间、卡元信息" },
+      { "token": "value", "size": 16, "weight": "Medium", "usage": "设置值、状态值" },
+      { "token": "captionTiny", "size": 16, "weight": "Regular", "usage": "次要说明、脚注" },
+      { "token": "badge", "size": 16, "weight": "SemiBold", "usage": "下载中标题" },
+      { "token": "tag", "size": 15, "weight": "Medium", "usage": "集列表、设置按钮" },
+      { "token": "tagSmall", "size": 15, "weight": "Regular", "usage": "年份、集信息" },
+      { "token": "badgeSmall", "size": 15, "weight": "SemiBold", "usage": "4K/1080p 徽标、演职人员名" },
+      { "token": "hint", "size": 14, "weight": "Regular", "usage": "设置说明、更新说明" },
+      { "token": "hintStrong", "size": 14, "weight": "SemiBold", "usage": "百分比、状态胶囊" },
+      { "token": "micro", "size": 13, "weight": "Medium", "usage": "下载/上传速度" },
+      { "token": "microRegular", "size": 12, "weight": "Regular", "usage": "演职人员职位" },
+      { "token": "microBadge", "size": 11, "weight": "SemiBold", "usage": "2x / Free 角标" }
+    ]
+  },
+
+  "spacing": {
+    "core": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40, 48, 56, 64, 80, 96],
+    "exceptions": {
+      "3": "开关内边距",
+      "15": "焦点磁贴内部 gap",
+      "26": "按钮左右 padding",
+      "34": "下载卡标题与任务间距",
+      "164": "壁纸面板关闭按钮位置",
+      "179": "磁贴组内部坐标差",
+      "183": "磁贴组内部坐标差",
+      "260": "壁纸图标尺寸",
+      "280": "设置导航宽",
+      "288": "设置导航/页脚宽",
+      "300": "设置内容左边距"
+    },
+    "page": {
+      "contentInsetX": 188,
+      "settingsNavX": 188,
+      "settingsContentX": 540,
+      "footerY": 988,
+      "sectionGap": 240,
+      "posterRowGap": 32
+    },
+    "densities": {
+      "posterGap": 24,
+      "tileGap": 24,
+      "continueGap": 24,
+      "episodeGapX": 22,
+      "episodeGapY": 30,
+      "settingsRowHeight": 72,
+      "settingsRowHeightWide": 80
+    }
+  },
+
+  "radius": {
+    "r2": 2, "r3": 3, "r5": 5, "r6": 6, "r10": 10, "r12": 12,
+    "r14": 14, "r15": 15, "r16": 16, "r18": 18, "r20": 20, "r22": 22,
+    "r23": 23, "r24": 24, "r26": 26, "r28": 28, "r30": 30,
+    "r40": 40, "r48": 48, "r52": 52, "r56": 56,
+    "pill": 9999,
+    "usage": {
+      "tile": "22 默认 / 24 焦点",
+      "poster": "12",
+      "continueCard": 14,
+      "glassPlate": 52,
+      "settingsPanel": 20,
+      "settingsNavItem": 28,
+      "button": 24,
+      "detailButton": 30,
+      "panel": 28,
+      "overlay": 18,
+      "switch": 15,
+      "segment": 22,
+      "segmentOption": 18,
+      "keycap": 10,
+      "progressBar": 2
+    }
+  },
+
+  "shadow": {
+    "tileFocus": { "x": 0, "y": 18, "blur": 40, "spread": -4, "color": "rgba(0,0,0,0.45)" },
+    "glassPlate": { "x": 0, "y": 26, "blur": 64, "spread": -6, "color": "rgba(0,0,0,0.42)" },
+    "filterPanel": { "x": 0, "y": 26, "blur": 64, "spread": -8, "color": "rgba(0,0,0,0.50)" },
+    "playSourceOverlay": { "x": 0, "y": 24, "blur": 64, "spread": -8, "color": "rgba(0,0,0,0.50)" },
+    "downloadCard": { "x": 0, "y": 18, "blur": 48, "spread": -6, "color": "rgba(0,0,0,0.45)" },
+    "infoCard": { "x": 0, "y": 20, "blur": 56, "spread": -8, "color": "rgba(0,0,0,0.45)" },
+    "heroText": { "x": 0, "y": 24, "blur": 64, "spread": 0, "color": "rgba(0,0,0,0.48)" }
+  },
+
+  "blur": {
+    "glassPlateBackground": 40,
+    "panelBackground": "未取到（面板为渐变填充，无 BACKGROUND_BLUR）"
+  },
+
+  "icon": {
+    "viewBox": 24,
+    "stroke": { "default": 2.4, "thin": 1.8, "search": 2.6, "close": 2.6 },
+    "sizes": {
+      "nav": 24,
+      "navSmall": 22,
+      "tileDefault": 44,
+      "tileFocus": 48,
+      "inline": 20,
+      "badgeCheck": 12,
+      "chevron": 7,
+      "chevronWide": 12,
+      "weather": 34,
+      "cornerButton": 26,
+      "close": 14,
+      "wallpaperFab": 26
+    },
+    "iconTextGap": { "nav": 8, "tile": 14, "button": 10, "meta": 8 }
+  },
+
+  "focus": {
+    "entryTile": {
+      "defaultSize": "268x150",
+      "focusSize": "284x159",
+      "scaleX": 1.06,
+      "scaleY": 1.06,
+      "stroke": "3px #FFFFFF 92%",
+      "radius": { "default": 22, "focus": 24 },
+      "shadow": "0 18 40 -4 rgba(0,0,0,0.45)",
+      "gradient": "白 13%→4%（默认）/ 白 20%→7%（焦点）",
+      "icon": { "default": 44, "focus": 48 },
+      "label": { "default": "23 SemiBold #FFFFFF 92%", "focus": "24 SemiBold #FFFFFF 100%" }
+    },
+    "selectedPill": { "fill": "#FFFFFF", "text": "#0B0D11 24 SemiBold", "stroke": "none" },
+    "selectedNav": { "fill": "rgba(255,255,255,0.13)", "text": "rgba(255,255,255,0.92) 20 SemiBold" },
+    "note": "画布未画键盘焦点环；除磁贴与选中态外，列表/按钮的 focus 变体不存在"
+  },
+
+  "component": {
+    "entryTile": {
+      "nodeIds": ["2:115", "2:109", "2:112"],
+      "variants": 2,
+      "default": { "w": 268, "h": 150, "r": 22, "gap": 14, "pad": 0, "fill": "rgba(255,255,255,0.13)→0.04", "stroke": "rgba(255,255,255,0.14)", "icon": 44, "label": "23 SemiBold 92%" },
+      "focus": { "w": 284, "h": 159, "r": 24, "gap": 15, "fill": "rgba(255,255,255,0.20)→0.07", "stroke": "#FFFFFF 92% 3px", "icon": 48, "label": "24 SemiBold 100%", "shadow": "0 18 40 -4 rgba(0,0,0,0.45)" }
+    },
+    "continueCard": {
+      "node": "2:55 子节点「续看卡 1」",
+      "size": "320x180", "r": 14, "gap": 32, "poster": "124x180 r12", "overlay": "196x180",
+      "contentPad": "16 14", "contentGap": 6,
+      "title": "20 SemiBold 92%", "meta": "17 Regular 50%", "progress": "3h r2, track 30%, fill 95%", "badge": "11 SemiBold 60%"
+    },
+    "posterCard": {
+      "node": "3:23",
+      "size": "200x300", "r": 12, "image": "FILL",
+      "infoLayer": { "size": "200x300", "fill": "rgba(0,0,0,0.10)→0.68@76%→0.94", "pad": "36 30", "name": "24 SemiBold", "meta": "19 Medium 75%", "desc": "19 Regular 60%" }
+    },
+    "navRail": { "node": "3:1", "size": "76x576", "item": "76x84 r18 gap6 pad4", "icon": 24, "label": "20 Medium", "selectedFill": "rgba(255,255,255,0.13)" },
+    "navHint": { "node": "3:202", "size": "28x80", "radius": "0 16 16 0", "fill": "rgba(255,255,255,0.13)", "stroke": "rgba(255,255,255,0.18)", "chevron": "7x12" },
+    "filterPill": { "node": ["4:254", "4:297", "4:299"], "size": "120x56", "r": 28, "fill": "rgba(255,255,255,0.07)", "stroke": "rgba(255,255,255,0.14)", "text": "22 Medium 85%", "selectedFill": "#FFFFFF", "selectedText": "#0B0D11 24 SemiBold" },
+    "categoryTab": { "node": ["4:297", "4:299"], "size": "148x56", "r": 28, "fill": "rgba(255,255,255,0.07)", "stroke": "rgba(255,255,255,0.14)", "text": "24 Medium 85%", "selectedFill": "#FFFFFF", "selectedText": "#0B0D11 24 SemiBold" },
+    "episodeCard": { "node": "4:572", "size": "292x232", "gap": 10, "thumb": "292x164 r12", "number": "17 SemiBold 85%", "duration": "15 Regular 50%", "title": "16 Regular 65%" },
+    "episodeRow": { "node": "8:207", "size": "380x48", "r": 10, "pad": "0 12", "gap": 12, "title": "15 Medium 85%", "progress": "2h track 15% fill 100%" },
+    "downloadRow": { "node": "4:1019", "size": "300x34", "gap": 6, "name": "15 Medium 85%", "pct": "13 SemiBold 55%", "bar": "300x4 r2, track 18%, fill 95%" },
+    "statusPill": { "node": "4:1026", "size": "96x28", "r": 14, "fill": "rgba(47,184,107,0.20)", "stroke": "rgba(47,184,107,0.75)", "text": "15 SemiBold #2FB86B" },
+    "badgeLocal": { "node": "4:565", "size": "26x26", "r": 13, "fill": "#2FB86B", "check": "12", "fillOpacity": 0.9 },
+    "playSourceOption": { "node": "4:566", "size": "300x76", "r": 14, "pad": "0 18", "gap": 14, "fill": "rgba(255,255,255,0.08)", "stroke": "rgba(255,255,255,0.16)", "source": "20 SemiBold 90%", "spec": "15 Regular 55%", "check": 20 },
+    "subtitleEntry": { "node": "4:1107", "size": "280x56", "r": 28, "pad": "0 20", "gap": 10, "fill": "rgba(255,255,255,0.08)", "stroke": "rgba(255,255,255,0.28)", "text": "19 Medium 85%" },
+    "seasonTab": { "node": "8:202", "size": "148x56", "r": 28, "fill": "rgba(255,255,255,0.07)", "stroke": "rgba(255,255,255,0.16)", "text": "19 Medium 85%", "check": 20 },
+    "personCard": { "node": "8:108", "size": "88x104", "gap": 4, "avatar": "56x56 r28", "name": "15 SemiBold", "role": "12 Regular 40%" },
+    "keyCap": { "node": "4:489", "size": "56x62", "r": 14, "fill": "rgba(255,255,255,0.07)", "stroke": "rgba(255,255,255,0.10)", "text": "24 Medium 85%" },
+    "searchInput": { "size": "632x88", "r": 44, "fill": "rgba(255,255,255,0.10)", "stroke": "rgba(255,255,255,0.25)", "text": "23 Regular 92%" },
+    "buttonPrimary": { "size": "h60 / h48(设置)", "r": 30, "fill": "#FFFFFF", "text": "#05080A 21 SemiBold" },
+    "buttonGhost": { "size": "h60", "r": 30, "fill": "rgba(255,255,255,0.08)", "stroke": "rgba(255,255,255,0.38)", "text": "rgba(255,255,255,0.90) 21 SemiBold", "strokeWeight": 1.5 },
+    "settingsButton": { "size": "h48", "r": 24, "pad": "0 26", "fill": "#1E2429", "stroke": "#2A3037", "text": "#E8E9EA 16 Medium", "primaryStroke": "#B8A663", "dangerFill": "#241A18", "dangerStroke": "#6E3A33", "dangerText": "#E8837A" },
+    "switch": { "size": "52x30", "r": 15, "pad": 3, "onFill": "#B8A663", "offFill": "#3A3F45", "knob": "24x24 r12 #0A0D10", "disabledKnob": "#6E7276" },
+    "segment": { "size": "h44", "r": 22, "pad": 4, "gap": 4, "bg": "#1B2025", "option": "h36 r18 pad 18–22", "selectedFill": "#FFFFFF", "selectedText": "#0B0D11 16 SemiBold", "text": "16 Medium 85%" },
+    "stepper": { "size": "h44", "r": 22, "pad": 4, "gap": 4, "bg": "#1B2025", "btn": "36x36 r18 #22282E", "value": "76 wide, 16 Medium #FFFFFF" },
+    "textInput": { "size": "340x48", "r": 14, "pad": "0 16", "fill": "#101418", "stroke": "#B8A663" },
+    "viewportSlider": { "size": "h56", "r": 16, "pad": "10 20 10 14", "gap": 12, "fill": "#1B2025", "stroke": "#B8A663", "track": "14x44 r6 #4A5057" },
+    "statusDot": { "size": 8, "success": "#2FB86B", "muted": "#5F6368" },
+    "progressBar": { "height": 4, "r": 2, "track": "rgba(255,255,255,0.18)", "fill": "#FFFFFF 95%" },
+    "capacityBar": { "size": "140x6", "r": 3, "track": "#262B31" },
+    "settingsNavItem": { "size": "288x56", "r": 28, "pad": "0 24", "gap": 10, "activeFill": "rgba(255,255,255,0.09)", "activeText": "#FFFFFF 18 SemiBold", "inactiveText": "rgba(255,255,255,0.45) 18 Medium", "activeDot": "4x4 #B8A663" },
+    "toast": { "size": "609x56", "r": 16, "fill": "rgba(10,13,16,0.55)", "stroke": "rgba(255,255,255,0.18)", "blur": 20, "text": "16 SemiBold #E8E9EA" }
+  },
+
+  "layout": {
+    "home": {
+      "bg": "1920x1080",
+      "wallpaper": "1920x1080",
+      "wallDim": "1920x1080",
+      "clock": "x=96 y=100 w=640 hug（日期 26 / 时钟 128 / 天气 34）",
+      "wallpaperFab": "48x48 @1808,64",
+      "continueEntry": "224x46 r23 @848,728",
+      "glassPlate": "1792x214 r52 @64,802",
+      "tiles": "6 × 268x150，y=829，x=88/388/680/972/1264/1556（首个为焦点 284x159）"
+    },
+    "continueExpanded": { "size": "1728x300 @96,1180", "header": "120x43，22 Medium", "cards": "5 × 320x180，y=60，gap 32，x=0/352/704/1056/1408" },
+    "wallpaperPanel": {
+      "size": "1920x1080 @0,1560",
+      "panel": "720x1080 @1200,0",
+      "hairline": "1.5x1080 @0,0",
+      "title": "76x55 @48,64 (38 Bold)",
+      "closeHint": "80x29 @566,80",
+      "tabs": "hugx48 @48,160",
+      "groupTitle": "170x32 @48,246",
+      "cards": "199x112，3 列（x=48/260/472，pitch 212），2 行（y=286/412，pitch 126）",
+      "note": "350x29 @48,1022",
+      "pageHint": "900x32 @96,500"
+    },
+    "mediaPages": {
+      "contentInsetX": 188,
+      "tabsY": 44, "tabsH": 56,
+      "gridY": 208, "card": "200x300", "gapX": 24, "rowPitch": 432,
+      "columnsVisible": 7
+    },
+    "detail": {
+      "poster": "200x300 @188,150 (movie) / @188,110 (tv)",
+      "textX": 428,
+      "title": "76 Light (movie) / 62 Light (tv)",
+      "buttonsY": 556, "buttonsH": 60,
+      "fileInfoY": 680,
+      "similarTitleY": 840, "similarCardsY": 911
+    },
+    "settings": {
+      "frame": "1920x1080",
+      "bg": "#0A0D10",
+      "title": "44 SemiBold @188,96",
+      "nav": "288x560 @188,200 gap4 item 288x56 r28 pad24",
+      "content": "1192 wide @540,192, r20, fill #14181C, border #23282E",
+      "groupHeader": "30 SemiBold @588,132",
+      "row": "1192x72（部分 80），pad 0 28，左侧标签 19 Medium + 说明 14 Regular，右侧控件",
+      "divider": "1192x1 #1D2126",
+      "footer": "16 Regular 40% @188,988"
+    }
+  },
+
+  "unresolvedValues": [
+    "画布内金色出现 #B8A663、#D8A657、#D9A657 三个近似值，未统一",
+    "页面底色出现 #05080A、#0A0D10、#0A0D0F、#0B0D11 四个近似值，未统一",
+    "焦点磁贴 284x159 相对 268x150 为 1.06 倍，与文档 1.15 倍不一致",
+    "设置页是 1920 全屏 + 288 左导航，不是 06 要求的 720 抽屉",
+    "画布没有「来源」分组画板，也没有抽屉外壳/分组列表画板",
+    "画布无动效字段，无法给出时长与缓动"
+  ]
+}

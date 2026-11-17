@@ -1,0 +1,37 @@
+/* Font tokens. Components must reference these variables, never hard-code families. */
+:root {
+  --font-ui:
+    "Nastv SF Pro Text", "Nastv SF Pro Display", "SF Pro Text", Inter,
+    "Nastv PingFang SC", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --font-display:
+    "Nastv SF Pro Display", "Nastv SF Pro Text", "SF Pro Display", Inter,
+    "Nastv PingFang SC", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --font-compact:
+    "Nastv SF Compact Text", "SF Compact Text", "SF Text", "Nastv SF Pro Text", Inter,
+    "Nastv PingFang SC", "PingFang SC", "Noto Sans SC", sans-serif;
+  --font-mono:
+    "Nastv SF Mono", "SF Mono", ui-monospace, "Cascadia Mono", Consolas,
+    "Nastv PingFang SC", "PingFang SC", monospace;
+  --font-editorial:
+    "Nastv New York Large", "New York Large", "New York",
+    "Nastv SF Pro Display", "Nastv PingFang SC", "PingFang SC", serif;
+}
+
+/*
+ * 交互 / 版面 token（与 docs/design/13-ui-interaction-visual-spec.md 对应）
+ * --rows-fade：海报墙滑入上半区时的渐隐距离，同时作为容器向上延伸量
+ * --card-focus-ring：卡片焦点内描边宽度
+ * --live-preview-w / --live-info-w：直播页上方画面与信息栏宽度
+ * --live-guide-h / --live-guide-ch-w / --live-row-h：底部课程表高度 / 频道列宽 / 行高
+ * --live-now-line：节目单当前时刻分割线颜色
+ */
+:root {
+  --rows-fade: calc(96 * var(--u));
+  --card-focus-ring: calc(2.5 * var(--u));
+  --live-preview-w: calc(980 * var(--u));
+  --live-info-w: calc(400 * var(--u));
+  --live-guide-h: calc(300 * var(--u));
+  --live-guide-ch-w: calc(220 * var(--u));
+  --live-row-h: calc(44 * var(--u));
+  --live-now-line: #e5484d;
+}

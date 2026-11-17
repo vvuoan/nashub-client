@@ -7,8 +7,13 @@
  *   unreachable / unauthorized / error，界面显示真实失败态，不伪造数据。
  * - 图片：海报端点 `/v1/media/{id}/poster?width=` 支持宽度；`/v1/media/{id}/backdrop`
  *   目前不收 width 参数，因此背景图按后端原图取，不臆造参数。
+ * - 字段适配只在这一层做：插件返回的字段名与 UI 约定不一致时（例如 `id`/`channelId`、
+ *   `item_type`/`itemType`），在这里归一化，页面调用方仍按 `types.ts` 的结构取数。
  */
-const DEFAULT_BASE = "http://127.0.0.1:8000";
+const DEFAULT_BASE = "http://127.0.0.1:2003";
+
+/** 单个请求的超时上限：内核本机部署，超过 8s 基本等于不可达，早失败早显示重试。 */
+const REQUEST_TIMEOUT_MS = 8000;
 
 export class ApiError extends Error {
   readonly status: number;
@@ -40,7 +45,21 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const token = authToken();
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  const res = await fetch(`${baseUrl()}${path}`, { ...init, headers });
+  // 后端不可达时 fetch 会挂到系统级超时（可能几十秒），主页会长时间停在 loading。
+  // 这里用 AbortController 兜一层，超时统一抛 ApiError(code=timeout, status=0)。
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  let res: Response;
+  try {
+    res = await fetch(`${baseUrl()}${path}`, { ...init, headers, signal: controller.signal });
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new ApiError(0, "timeout", `请求超时（${REQUEST_TIMEOUT_MS / 1000}s）：${path}`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
   if (!res.ok) {
     let code = `HTTP_${res.status}`;
     let message = res.statusText || "request failed";
@@ -272,6 +291,121 @@ export interface MusicStatusResponse {
   message: string;
 }
 
+/* ---------- 响应归一化：插件字段 → UI 约定字段 ---------- */
+
+type RawRecord = Record<string, unknown>;
+
+function asRecord(value: unknown): RawRecord {
+  return value !== null && typeof value === "object" ? (value as RawRecord) : {};
+}
+
+function asString(value: unknown, fallback = ""): string {
+  if (typeof value === "string") return value;
+  if (value === null || value === undefined) return fallback;
+  return String(value);
+}
+
+function asNumber(value: unknown, fallback: number): number {
+  const num = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(num) ? num : fallback;
+}
+
+/** 把插件返回的相对图片路径补成绝对 URL；已是绝对地址则原样返回。 */
+function absoluteImage(value: unknown): string | null {
+  const path = asString(value);
+  if (!path) return null;
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${baseUrl()}${path.startsWith("/") ? "" : "/"}${path}`;
+}
+
+/** 直播频道：插件用 `id`，UI 用 `channelId`。 */
+function normalizeLiveChannel(raw: unknown): LiveChannel {
+  const item = asRecord(raw);
+  return {
+    ...(item as unknown as LiveChannel),
+    channelId: asString(item.channelId ?? item.id),
+    name: asString(item.name),
+    group: asString(item.group),
+    logo: item.logo === null || item.logo === undefined ? null : asString(item.logo),
+    source: item.source === null || item.source === undefined ? null : asString(item.source),
+    streamCount: asNumber(item.streamCount, 0),
+    updatedAt: asString(item.updatedAt),
+  };
+}
+
+/** 直播分页：插件回 `total`/`pageSize`，UI 期望 `count`/`limit` 齐全。 */
+function normalizeLiveChannelPage(raw: unknown): LiveChannelPage {
+  const page = asRecord(raw);
+  const items = Array.isArray(page.items) ? page.items.map(normalizeLiveChannel) : [];
+  return {
+    ...(page as unknown as LiveChannelPage),
+    items,
+    count: asNumber(page.count ?? page.total, items.length),
+    total: asNumber(page.total ?? page.count, items.length),
+    offset: asNumber(page.offset, 0),
+    limit: asNumber(page.limit ?? page.pageSize, items.length),
+  };
+}
+
+/** 收藏：插件回 snake_case，UI 期望 camelCase。 */
+function normalizeFavorite(raw: unknown): FavoriteItem {
+  const item = asRecord(raw);
+  return {
+    ...(item as unknown as FavoriteItem),
+    id: asNumber(item.id, 0),
+    itemType: asString(item.itemType ?? item.item_type),
+    itemId: asString(item.itemId ?? item.item_id),
+    titleSnapshot: asString(item.titleSnapshot ?? item.title_snapshot),
+    createdAt: asString(item.createdAt ?? item.created_at),
+  };
+}
+
+function normalizeFavoritePage(raw: unknown): FavoritePage {
+  const page = asRecord(raw);
+  const items = Array.isArray(page.items) ? page.items.map(normalizeFavorite) : [];
+  return {
+    ...(page as unknown as FavoritePage),
+    items,
+    count: asNumber(page.count ?? page.total, items.length),
+    total: asNumber(page.total ?? page.count, items.length),
+    offset: asNumber(page.offset, 0),
+    limit: asNumber(page.limit ?? page.pageSize, items.length),
+  };
+}
+
+/** 检索：`posterUrl` 缺失时用 `posterPath` 或别名端点 `/v1/media/{id}/poster` 兜底。 */
+function normalizeSearchItem(raw: unknown): MediaSearchItem {
+  const item = asRecord(raw);
+  const itemId = asString(item.itemId ?? item.id);
+  const poster =
+    absoluteImage(item.posterUrl) ??
+    absoluteImage(item.posterPath) ??
+    (itemId ? posterUrl(itemId) : null);
+  return {
+    ...(item as unknown as MediaSearchItem),
+    itemId,
+    title: asString(item.title),
+    originalTitle:
+      item.originalTitle === null || item.originalTitle === undefined
+        ? null
+        : asString(item.originalTitle),
+    year: item.year === null || item.year === undefined ? null : asNumber(item.year, 0) || null,
+    type: asString(item.type),
+    rating: item.rating === null || item.rating === undefined ? null : asNumber(item.rating, 0),
+    posterUrl: poster,
+  };
+}
+
+function normalizeSearchPage(raw: unknown): MediaSearchPage {
+  const page = asRecord(raw);
+  const items = Array.isArray(page.items) ? page.items.map(normalizeSearchItem) : [];
+  return {
+    ...(page as unknown as MediaSearchPage),
+    items,
+    count: asNumber(page.count ?? page.total, items.length),
+  };
+}
+
 export const api = {
   health: () => request<{ status: string }>("/v1/health"),
   homeOverview: () => request<HomeOverview>("/v1/home/overview"),
@@ -305,22 +439,27 @@ export const api = {
     ),
   recommendSources: () => request<{ sources: RecommendSource[] }>("/v1/recommend/sources"),
   favorites: (offset = 0, limit = 50) =>
-    request<FavoritePage>(`/v1/favorites?offset=${offset}&limit=${limit}`),
+    request<unknown>(`/v1/favorites?offset=${offset}&limit=${limit}`).then(normalizeFavoritePage),
   search: (q: string, limit = 20, type?: "movie" | "series" | "anime") => {
     const query = new URLSearchParams();
     query.set("q", q);
     query.set("limit", String(Math.max(1, Math.min(50, limit))));
     if (type) query.set("type", type);
-    return request<MediaSearchPage>(`/v1/search?${query.toString()}`);
+    return request<unknown>(`/v1/search?${query.toString()}`).then(normalizeSearchPage);
   },
   liveGroups: () => request<LiveGroupsResponse>("/v1/live/groups"),
   liveChannels: (options: { group?: string; q?: string; limit?: number; offset?: number } = {}) => {
+    const limit = Math.max(1, Math.min(200, options.limit ?? 50));
+    const offset = Math.max(0, options.offset ?? 0);
     const query = new URLSearchParams();
     if (options.group) query.set("group", options.group);
     if (options.q) query.set("q", options.q);
-    query.set("limit", String(Math.max(1, Math.min(200, options.limit ?? 50))));
-    query.set("offset", String(Math.max(0, options.offset ?? 0)));
-    return request<LiveChannelPage>(`/v1/live/channels?${query.toString()}`);
+    // 插件分页参数是 page/pageSize（1 基页码），客户端调用方用 limit/offset，在这里翻译。
+    query.set("pageSize", String(limit));
+    query.set("page", String(Math.floor(offset / limit) + 1));
+    return request<unknown>(`/v1/live/channels?${query.toString()}`).then(
+      normalizeLiveChannelPage,
+    );
   },
   liveEpg: (channelId: string, limit = 5) =>
     request<LiveEpgResponse>(

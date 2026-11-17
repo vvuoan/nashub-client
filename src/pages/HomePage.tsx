@@ -152,11 +152,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
   }, [wall.dim]);
 
   const black = wall.source === "black" || wall.wallUrl === null;
-  const lunar = overview?.lunar.display ?? null;
-  const weather =
-    overview && overview.weather.temperature !== null
-      ? `${overview.weather.temperature}°${overview.weather.condition ? ` · ${overview.weather.condition}` : ""}`
-      : null;
+  // 后端当前不返回 weather / lunar（插件未装），缺字段时必须降级成"不展示"，
+  // 不能整页白屏。
+  const lunar = overview?.lunar?.display ?? null;
+  const temperature = overview?.weather?.temperature ?? null;
+  const condition = overview?.weather?.condition ?? null;
+  const weather = temperature !== null ? `${temperature}°${condition ? ` · ${condition}` : ""}` : null;
 
   return (
     <>

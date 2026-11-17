@@ -310,6 +310,21 @@ function asNumber(value: unknown, fallback: number): number {
   return Number.isFinite(num) ? num : fallback;
 }
 
+/**
+ * 取响应里第一个可用的总数：跳过 `null`/`undefined`/空白字符串，但**保留 0**。
+ * 用于 `count ?? total ?? items.length` 这类兜底——直接 `Number()` 会把
+ * `null`/`""` 变成 0（真的 0 与"没给"混为一谈），所以先筛掉缺失值再转换。
+ */
+function firstCount(...candidates: unknown[]): number | null {
+  for (const candidate of candidates) {
+    if (candidate === null || candidate === undefined) continue;
+    if (typeof candidate === "string" && candidate.trim() === "") continue;
+    const num = typeof candidate === "number" ? candidate : Number(candidate);
+    if (Number.isFinite(num)) return num;
+  }
+  return null;
+}
+
 /** 把插件返回的相对图片路径补成绝对 URL；已是绝对地址则原样返回。 */
 function absoluteImage(value: unknown): string | null {
   const path = asString(value);
@@ -403,7 +418,7 @@ function normalizeSearchPage(raw: unknown): MediaSearchPage {
     ...(page as unknown as MediaSearchPage),
     items,
     // 插件 /search 只回 `total`（等于本次返回条数），没有 `count`。
-    count: asNumber(page.count ?? page.total, items.length),
+    count: firstCount(page.count, page.total) ?? items.length,
   };
 }
 
@@ -414,8 +429,8 @@ function normalizeLibrary(raw: unknown): LibrarySummary {
     ...(item as unknown as LibrarySummary),
     id: asString(item.id ?? item.libraryId ?? item.library_id),
     name: asString(item.name),
-    // 用 `||` 而不是 `??`：插件给空串时同样回落到 kind。
-    collectionType: asString(item.collectionType) || asString(item.kind),
+    // 用 `||` + `trim()` 而不是 `??`：插件给空串/纯空格时同样回落到 kind。
+    collectionType: asString(item.collectionType).trim() || asString(item.kind),
   };
 }
 
@@ -431,7 +446,7 @@ function normalizeLibraryPage(raw: unknown): LibraryListResponse {
   return {
     ...(page as unknown as LibraryListResponse),
     libraries,
-    count: asNumber(page.count ?? page.total, libraries.length),
+    count: firstCount(page.count, page.total) ?? libraries.length,
   };
 }
 
@@ -477,7 +492,8 @@ function byStartAt(a: LiveProgramme, b: LiveProgramme): number {
  * 节目单：插件回 `{ channelId, items: [{ start_at, stop_at, ... }] }`，
  * UI 期望 `{ channelId, matched, current, upcoming, count, fetchedAt }`。
  * `current`/`upcoming` 由客户端按当前时刻切分，避免 UI 各页面重复算。
- * 若后端将来直接按客户端形状返回（`upcoming` 是数组且带 `matched`），采信服务端结果、不再本地推导。
+ * 若后端将来直接按客户端形状返回（没有 `items` 数组，且 `upcoming` 是数组或 `current` 是对象），
+ * 采信服务端算好的结果、不再本地推导。
  *
  * `limit` 是调用方想要的 `upcoming` 条数（默认 {@link EPG_UPCOMING_LIMIT}，只作下限不下压）。
  */
@@ -491,9 +507,14 @@ function normalizeEpg(
   // 不让最多 500 条原文跟着响应对象一路传给 UI（其它未知字段仍原样保留）。
   const { items: _omittedItems, ...rest } = page;
   const items = Array.isArray(page.items) ? page.items : null;
-  // 只有「upcoming 是数组 + 带 matched」才算后端已按新形状返回。只凭 current 键存在会误判：
-  // `{ channelId, current: null, items: [...] }` 会被当成新形状，导致 items 里的数据被静默丢弃。
-  const clientShaped = Array.isArray(page.upcoming) && "matched" in page;
+  // 形状判定以「`items` 不是数组」为主判据：插件形状一定带 `items` 数组，所以
+  // `{ channelId, current: null, items: [...] }` 不会被误判成服务端形状而丢掉 items 数据；
+  // 反过来只要没有 items 数组，且出现 `upcoming` 数组或 `current` 对象，就认作服务端已算好的形状。
+  // 判据刻意放宽：代理/中间层少透 `matched` 或 `upcoming` 任一字段时仍能拿数据，不至于空节目单。
+  const clientShaped =
+    !Array.isArray(page.items) &&
+    (Array.isArray(page.upcoming) ||
+      (page.current !== null && typeof page.current === "object"));
   const upcomingLimit = Number.isFinite(limit)
     ? Math.max(EPG_UPCOMING_LIMIT, Math.floor(limit))
     : EPG_UPCOMING_LIMIT;
@@ -538,11 +559,12 @@ function normalizeEpg(
     matched,
     current,
     upcoming,
-    // `??` 先吃掉 null：`count: null` 不能送进 Number()（会变 0），要按缺失处理。
-    count: asNumber(
-      page.count ?? page.total,
-      items ? items.length : upcoming.length + (current === null ? 0 : 1),
-    ),
+    // `count` 表示「插件本次返回的节目条数」，不是「可渲染条数」：时间不可解析的条目
+    // 虽然被丢出 current/upcoming，仍计入 count。两者语义不同，页面不要拿 count 当渲染条数上限。
+    // 缺失值（`null`/`undefined`/`""`）逐级回落到 `total`、条目数；`count: 0` 是合法值，照用。
+    count:
+      firstCount(page.count, page.total) ??
+      (items ? items.length : upcoming.length + (current === null ? 0 : 1)),
     fetchedAt: asString(page.fetchedAt) || new Date(now).toISOString(),
   };
 }
